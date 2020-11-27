@@ -60,8 +60,7 @@ export class DataGridComponent {
         flex: 1,
         filter: true,
         editable: true,
-        cellStyle: {backgroundColor: '#FFFFFF'},
-        sortable: true
+        cellStyle: {backgroundColor: '#FFFFFF'}
       },
       rowSelection: 'multiple',
       // suppressHorizontalScroll: true,

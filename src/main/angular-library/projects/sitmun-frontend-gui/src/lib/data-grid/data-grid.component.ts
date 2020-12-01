@@ -63,6 +63,7 @@ export class DataGridComponent {
         cellStyle: {backgroundColor: '#FFFFFF'},
       },
       rowSelection: 'multiple',
+      singleClickEdit: true,
       // suppressHorizontalScroll: true,
 
     };

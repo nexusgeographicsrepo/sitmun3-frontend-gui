@@ -7,24 +7,24 @@ input {
   margin-bottom: 5px;
 }
 
-#botoNou {
+#newButton {
   color: white;
   background: #68a225 0% 0% no-repeat padding-box;
   margin-left: 3px;
 }
 
-#botoElimina {
+#deleteButton {
   background: #ffffff 0% 0% no-repeat padding-box;
   margin-left: 3px;
 }
 
-#aplicarCanvis {
+#applyChangesButton {
   color: white !important;
   background: #68a225 0% 0% no-repeat padding-box;
   margin-left: 3px;
 }
 
-#aplicarCanvis[disabled]
+#applyChangesButton[disabled]
 {
   background: #83976c 0% 0% no-repeat padding-box;
 }
@@ -51,12 +51,12 @@ input {
   margin-left: 3px;
 }
 
-#borrarCanvis {
+#deleteChangesButton {
   color: white !important;
   background: #df3133;
 }
 
-#borrarCanvis[disabled] {
+#deleteChangesButton[disabled] {
   color: white !important;
   background: #da8c8e;
 }

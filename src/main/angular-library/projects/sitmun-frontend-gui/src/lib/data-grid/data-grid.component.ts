@@ -38,7 +38,7 @@ export class DataGridComponent {
   @Input() deleteButton: boolean;
   @Input() newButton: boolean;
   @Input() globalSearch: boolean;
-
+  @Input() themeGrid: any;
 
 
   @Output() remove: EventEmitter<any[]>;

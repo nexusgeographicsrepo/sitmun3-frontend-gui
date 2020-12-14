@@ -62,7 +62,28 @@ export class DataGridComponent {
         editable: true,
         cellStyle: {backgroundColor: '#FFFFFF'},
       },
+      columnTypes: {
+        dateColumn: {
+            filter: 'agDateColumnFilter',
+            filterParams: {
+              comparator(filterLocalDateAtMidnight, cellValue) {
+                const dateCellValue = new Date(cellValue);
+                const dateFilter = new Date(filterLocalDateAtMidnight);
+
+                if (dateCellValue.getTime() < dateFilter.getTime()) {
+                  return -1;
+                } else if (dateCellValue.getTime()  > dateFilter.getTime()) {
+                  return 1;
+                } else {
+                  return 0;
+                }
+              },
+            },
+            suppressMenu: true
+        }
+    },
       rowSelection: 'multiple',
+      singleClickEdit: true,
       // suppressHorizontalScroll: true,
 
     };

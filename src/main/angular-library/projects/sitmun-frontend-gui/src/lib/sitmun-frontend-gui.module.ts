@@ -20,6 +20,7 @@ import { DataGridComponent } from './data-grid/data-grid.component';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { MatButtonModule } from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
+import {MatMenuModule} from '@angular/material/menu';
 import { BtnEditRenderedComponent } from './btn-edit-rendered/btn-edit-rendered.component';
 
 
@@ -40,6 +41,7 @@ import { BtnEditRenderedComponent } from './btn-edit-rendered/btn-edit-rendered.
     SitmunFrontendCoreModule,
     MatButtonModule,
     MatIconModule,
+    MatMenuModule
  
   ],
   declarations: [

@@ -21,6 +21,19 @@
             <span  [translate]="'Remove'"> </span>
             
         </button>
+
+        
+        <button  mat-stroked-button [matMenuTriggerFor]="menu" id="actionButton">
+            <span  [translate]="'Actions'"> </span>    
+            <mat-icon fontSet="material-icons-round" > keyboard_arrow_down </mat-icon>     
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item> {{"Export" | translate}} </button>
+            <button mat-menu-item> {{"Duplicate" | translate}}</button>
+            <button mat-menu-item> {{"Search/Replace" | translate}}</button>
+        </mat-menu>  
+            
+
         <button  *ngIf="newButton" mat-stroked-button id="newButton"  (click)="newData()">
             <mat-icon fontSet="material-icons-round"> add_circle_outline </mat-icon>      
             <span  [translate]="'New'"> </span>           

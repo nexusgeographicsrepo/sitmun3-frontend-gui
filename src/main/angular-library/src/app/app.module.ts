@@ -17,6 +17,7 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { MatButtonModule } from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
+import {MatMenuModule} from '@angular/material/menu';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 
@@ -57,6 +58,7 @@ const appRoutes: Routes = [
         }),
         MatButtonModule,
         MatIconModule,
+        MatMenuModule,
 
 
         AngularHalModule.forRoot(),

@@ -18,6 +18,13 @@ input {
   margin-left: 3px;
 }
 
+#actionButton {
+  background: #ffffff 0% 0% no-repeat padding-box;
+  margin-left: 3px;
+  text-align: center !important;
+}
+
+
 #applyChangesButton {
   color: white !important;
   background: #68a225 0% 0% no-repeat padding-box;
@@ -106,7 +113,7 @@ input {
 
 .actionsDivBtns .searchGenericInput{
   height: 45px!important;
-  width: 50% !important;
+  width: 45% !important;
 }
 .ag-body-viewport.ag-layout-normal ::-webkit-scrollbar-thumb {
   background: #eee;

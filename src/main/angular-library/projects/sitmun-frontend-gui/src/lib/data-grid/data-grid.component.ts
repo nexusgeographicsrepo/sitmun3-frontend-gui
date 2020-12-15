@@ -108,6 +108,10 @@ export class DataGridComponent {
 
   }
 
+  exportData(): void{
+    this.gridApi.exportDataAsCsv();
+  }
+
   quickSearch(): void{
       this.gridApi.setQuickFilter(this.searchValue);
   }

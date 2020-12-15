@@ -71,15 +71,14 @@ input {
 .editDivBtns {
   margin-left: 10px;
   text-align: start;
-  display: inline-block;
-  width: 20%;
+  width: 130px;
   height: 30px !important;
   line-height: 30px !important;
 }
 
 .actionsDivBtns {
   text-align: end;
-  width:80%;
+  width: calc(100% - 140px);
   height: 60px;
 }
 

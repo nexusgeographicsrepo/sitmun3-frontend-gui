@@ -29,7 +29,7 @@
         </button>
         <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="exportData()" > {{"Export" | translate}} </button>
-            <button mat-menu-item> {{"Duplicate" | translate}}</button>
+            <button mat-menu-item (click)="duplicateSelectedRows()"> {{"Duplicate" | translate}}</button>
             <button mat-menu-item> {{"Search/Replace" | translate}}</button>
         </mat-menu>  
             

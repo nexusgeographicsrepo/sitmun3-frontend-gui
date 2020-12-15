@@ -44,6 +44,7 @@ export class DataGridComponent {
   @Output() remove: EventEmitter<any[]>;
   @Output() new: EventEmitter<number>;
   @Output() sendChanges: EventEmitter<any[]>;
+  @Output() add: EventEmitter<any[]>;
 
 
   constructor() {
@@ -103,11 +104,14 @@ export class DataGridComponent {
         this.statusColumn = true;
       }
     }
- 
-   
-
   }
 
+  
+  duplicateSelectedRows(): void{
+    const selectedNodes = this.gridApi.getSelectedNodes();
+    const selectedData = selectedNodes.map(node => node.data);
+    this.remove.emit(selectedData);
+  }
 
   getColumnKeysAndHeaders(columnkeys: Array<any>): String{    
     let header:Array<any> = [];

@@ -109,7 +109,10 @@ export class DataGridComponent {
   }
 
   exportData(): void{
-    this.gridApi.exportDataAsCsv();
+    let params = {
+      onlySelected: true
+    };
+    this.gridApi.exportDataAsCsv(params);
   }
 
   quickSearch(): void{

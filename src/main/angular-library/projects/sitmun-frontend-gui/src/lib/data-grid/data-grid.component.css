@@ -69,6 +69,7 @@ input {
 }
 
 .editDivBtns {
+  margin-left: 10px;
   text-align: start;
   display: inline-block;
   width: 20%;

@@ -108,47 +108,31 @@ export class DataGridComponent {
 
   }
 
-  getColumnKeysToExport(): any[]{    
-    let columnkeysToExport:Array<any> = [];
-    if (this.columnDefs.length == 0) {return columnkeysToExport};
+
+  getColumnKeysAndHeaders(columnkeys: Array<any>): String{    
+    let header:Array<any> = [];
+    if (this.columnDefs.length == 0) {return ''};
 
     let allColumnKeys=this.gridOptions.columnApi.getAllDisplayedColumns();
     console.log(allColumnKeys);
-    // return columnkeysToExport;
     allColumnKeys.forEach(element => {
         if (element.userProvidedColDef.headerName !== '')
         {
-          columnkeysToExport.push(element.userProvidedColDef.field);
+          columnkeys.push(element.userProvidedColDef.field);
+          header.push(element.userProvidedColDef.headerName);
         }
   
       
     });
-    return columnkeysToExport
-  }
-
-  getCustomHeader(): string{    
-    let header:Array<any> = [];
-    if (this.columnDefs.length == 0) {return ''};
-
-    let allColumnHeaders=this.gridOptions.columnApi.getAllDisplayedColumns();
-    console.log(allColumnHeaders);
-    // return columnkeysToExport;
-    allColumnHeaders.forEach(element => {
-        if (element.userProvidedColDef.headerName !== '')
-        {
-          header.push(element.userProvidedColDef.headerName);
-        }
-    });
-    console.log(header);
-
+    
     return header.join(",");
   }
+
 
   exportData(): void{
     let columnkeys:Array<any> = [];
     let customHeader:String = '';
-    columnkeys = this.getColumnKeysToExport()
-    customHeader= this.getCustomHeader();
+    customHeader = this.getColumnKeysAndHeaders(columnkeys)
     console.log(this.gridApi);
     let params = {
         onlySelected: true,
@@ -158,9 +142,10 @@ export class DataGridComponent {
     };
     this.gridApi.exportDataAsCsv(params);
   }
+
   quickSearch(): void{
-      this.gridApi.setQuickFilter(this.searchValue);
-  }
+    this.gridApi.setQuickFilter(this.searchValue);
+}
 
   getElements(): void
   {

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AllCommunityModules, ColumnApi, Module } from '@ag-grid-community/all-modules';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-data-grid',
@@ -50,7 +51,8 @@ export class DataGridComponent implements OnInit {
   @Output() duplicate: EventEmitter<any[]>;
 
 
-  constructor() {
+  constructor(public translate: TranslateService) {
+    this.translate = translate;
 
     this.remove = new EventEmitter();
     this.new = new EventEmitter();
@@ -90,7 +92,10 @@ export class DataGridComponent implements OnInit {
       rowSelection: 'multiple',
       singleClickEdit: true,
       // suppressHorizontalScroll: true,
-
+      localeTextFunc: (key: string, defaultValue: string) => {
+        const data = this.translate.instant(key);
+        return data === key ? defaultValue : data;
+    }
     };
 
   }

@@ -19,14 +19,14 @@ export class DataGridComponent implements OnInit {
   private gridColumnApi;
   statusColumn = false;
   changesMap: Map<number, Map<string, number>> = new Map<number, Map<string, number>>();
-   // Guardaremos id de las celas modificadas i el nº de ediciones hechas sobre estas
-  private params; // Parametros del grid en la ultima modificacion hecha (por si hacemos apply changes)
+   // We will save the id of edited cells and the number of editions done.
+  private params; // Last parameters of the grid (in case we do apply changes we will need it) 
   rowData: any[];
-  changeCounter: number; // Numero de ediciones hechas sobre las celas
-  previousChangeCounter: number; //  Numero de ediciones que habia antes de hacer la ultima modificacion (changeCounter)
-  redoCounter: number; // Numero de redo que podemos hacer
+  changeCounter: number; // Number of editions done above any cell 
+  previousChangeCounter: number; // Number of ditions done after the last modification(changeCounter)
+  redoCounter: number; // Number of redo we can do
   modificationChange = false;
-  undoNoChanges = false; // Booleano para saber si es un undo provocado por un cambio sin modificaciones
+  undoNoChanges = false; // Boolean that indicates if an undo hasn't modifications
   gridOptions;
 
   @Input() eventRefreshSubscription: Observable <boolean> ;
@@ -41,6 +41,7 @@ export class DataGridComponent implements OnInit {
   @Input() newButton: boolean;
   @Input() globalSearch: boolean;
   @Input() themeGrid: any;
+  @Input() singleSelection: boolean;
 
 
   @Output() remove: EventEmitter<any[]>;
@@ -109,6 +110,7 @@ export class DataGridComponent implements OnInit {
 
 
   onGridReady(params): void{
+    if (this.singleSelection) {this.gridOptions.rowSelection = 'single'}
     this.params = params;
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
@@ -270,15 +272,15 @@ export class DataGridComponent implements OnInit {
 
   onCellValueChanged(params): void{
 
-    this.params = params; // Guardaremos los parametros por si hay que hacer un apply changes
+    this.params = params; 
     if (this.changeCounter > this.previousChangeCounter)
-      // Esta condición será cierta si venimos de editar la cela o de hacer un redo
+      // True if we have edited some cell or we have done a redo 
       {
 
         if (params.oldValue !== params.value && !(params.oldValue == null && params.value === ''))
         {
           
-          if (! this.changesMap.has(params.node.id)) // Si no habiamos editado la cela con anterioridad, la añadimos al map y la pintamos de verde
+          if (! this.changesMap.has(params.node.id)) // If it's firts edit of a cell, we add it to the map and we paint it
           {
             const addMap: Map<string, number> = new Map<string, number>();
             addMap.set(params.colDef.field, 1)
@@ -292,29 +294,29 @@ export class DataGridComponent implements OnInit {
             }
 
             else{
-              // Si ya habíamos modificado la cela, aumentamos el numero de cambios en esta
+              // We already had edited this cell, so we only increment number of changes of it on the map 
              const currentChanges = this.changesMap.get(params.node.id).get(params.colDef.field);
              this.changesMap.get(params.node.id).set(params.colDef.field, (currentChanges + 1));
            }
 
           }
-          this.paintCells(params, this.changesMap); // Com ha estado modificada la linia, la pintamos de verde
-          this.previousChangeCounter++; //Igualamos el contador de cambios anterior al actual
+          this.paintCells(params, this.changesMap); //We paint the row of the edited cell 
+          this.previousChangeCounter++; //We match the current previousChangeCounter with changeCounter
         }
 
       }
-    else if (this.changeCounter < this.previousChangeCounter){ // Entrará aquí si hemos hecho un undo
+    else if (this.changeCounter < this.previousChangeCounter){ // True if we have done an undo
         let currentChanges = -1;
         if (this.changesMap.has(params.node.id)) {currentChanges = this.changesMap.get(params.node.id).get(params.colDef.field);}
         
-        if (currentChanges === 1) { //Al deshacer el cambio, la dejaremos en su estado inicial
+        if (currentChanges === 1) { //Once the undo it's done, cell is in his initial status
 
           this.changesMap.get(params.node.id).delete(params.colDef.field);
-          if(this.changesMap.get(params.node.id).size === 0) { // No hay mas modificaciones en eta fila
+          if(this.changesMap.get(params.node.id).size === 0) { // No more modifications in this row
             this.changesMap.delete(params.node.id);
             const row = this.gridApi.getDisplayedRowAtIndex(params.rowIndex);
 
-            // Si solo tiene una modificacion, quiere decir que la cela está en su estado inicial, por lo que la pintamos de blanco
+            // We paint it white
             this.gridApi.redrawRows({rowNodes: [row]});
 
            }
@@ -324,38 +326,38 @@ export class DataGridComponent implements OnInit {
            }
 
         }
-        else if (currentChanges >1) // La cela aún no está en su estado inicial, por lo que segguirá verde
-        {                                 // No podemos hacer else por si hacemos un undo de una cela sin cambios
+        else if (currentChanges >1) // The cell isn't in his initial state yet
+        {                                 //We can't do else because we can be doing an undo without changes 
           this.changesMap.get(params.node.id).set(params.colDef.field, (currentChanges - 1));
 
-          this.paintCells(params, this.changesMap);// Como aun tiene cambios, el background tiene que seguir verde
+          this.paintCells(params, this.changesMap);//Not initial state -> green background
 
         }
-        this.previousChangeCounter--;  // Com veniem d'undo, hem de decrementar el comptador de canvisAnterior
+        this.previousChangeCounter--;  //We decrement previousChangeCounter because we have done undo
     }
-    else{ // Control de modificaciones en blanco
-      if(params.oldValue !== params.value && !(params.oldValue == null && params.value === '') ) // No es modificacion en blanco
+    else{ // Control of modifications without changes
+      if(params.oldValue !== params.value && !(params.oldValue == null && params.value === '') ) //Isn't a modification without changes
       {
         this.modificationChange = true;
       }
       else{ 
-        if ( this.changesMap.has(params.node.id)) // Modificacion en blanco sobre una cela modificada
+        if ( this.changesMap.has(params.node.id)) //Modification without changes in en edited cell
         {
           if(!this.undoNoChanges)
           {
-            this.gridApi.undoCellEditing(); // Undo para deshacer el cambio sin modificaciones internamente
+            this.gridApi.undoCellEditing(); // Undo to delete the change without changes internally 
             this.undoNoChanges = true;
-            this.paintCells(params, this.changesMap);  // Como aun tiene modificaciones, el background sigue siendo verde
+            this.paintCells(params, this.changesMap);  //The cell has modifications yet -> green background 
           }
           else { this.undoNoChanges = false; }
 
 
         }
         else {
-          // Como al hacer undo volverá a entrar a esta misma función, hay que enviarlo a su if correspondiente
+          //With the internally undo will enter at this function, so we have to control when done the undo or not 
           if(!this.undoNoChanges)
           {
-            this.gridApi.undoCellEditing(); // Undo para deshacer el cambio sin modificaciones internamente
+            this.gridApi.undoCellEditing(); // Undo to delete the change internally
             this.undoNoChanges = true;
           }
           else { this.undoNoChanges = false; }
@@ -376,7 +378,7 @@ export class DataGridComponent implements OnInit {
     this.changeCellStyleColumns(params,changesMap,'#E8F1DE');
     this.gridApi.redrawRows({rowNodes: [row]});
     this.changeCellStyleColumns(params,changesMap,'#FFFFFF'); 
-    // Definiremos el cellStyle blanco para futuras modificaciones internas (ej: filtro)
+    // We will define cellStyle white to future modifications (like filter)
   }
 
   changeCellStyleColumns(params: any, changesMap: Map<number, Map<string, number>>, color: string){

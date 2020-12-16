@@ -11,9 +11,9 @@ import {TranslateService} from '@ngx-translate/core';
   templateUrl: './data-grid.component.html',
   styleUrls: ['./data-grid.component.css']
 })
-export class DataGridComponent {
+export class DataGridComponent implements OnInit {
  
-
+  private _eventRefreshSubscription: any;
   modules: Module[] = AllCommunityModules;
   searchValue: string;
   private gridApi;
@@ -29,6 +29,8 @@ export class DataGridComponent {
   modificationChange = false;
   undoNoChanges = false; // Booleano para saber si es un undo provocado por un cambio sin modificaciones
   gridOptions;
+
+  @Input() eventRefreshSubscription: Observable <boolean> ;
   @Input() frameworkComponents: any;
   @Input() columnDefs: any[];
   @Input() getAll: () => Observable<any>;
@@ -45,7 +47,7 @@ export class DataGridComponent {
   @Output() remove: EventEmitter<any[]>;
   @Output() new: EventEmitter<number>;
   @Output() sendChanges: EventEmitter<any[]>;
-  @Output() add: EventEmitter<any[]>;
+  @Output() duplicate: EventEmitter<any[]>;
 
 
   constructor(public translate: TranslateService) {
@@ -54,6 +56,7 @@ export class DataGridComponent {
     this.remove = new EventEmitter();
     this.new = new EventEmitter();
     this.sendChanges = new EventEmitter();
+    this.duplicate = new EventEmitter();
     this.changeCounter = 0;
     this.previousChangeCounter = 0;
     this.redoCounter = 0;
@@ -97,6 +100,18 @@ export class DataGridComponent {
   }
 
 
+  ngOnInit(){
+
+    if (this.eventRefreshSubscription) {
+      this._eventRefreshSubscription = this.eventRefreshSubscription.subscribe(() => {
+        this.getElements();
+      });
+    }
+
+
+  }
+
+
 
   onGridReady(params): void{
     this.params = params;
@@ -115,7 +130,7 @@ export class DataGridComponent {
   duplicateSelectedRows(): void{
     const selectedNodes = this.gridApi.getSelectedNodes();
     const selectedData = selectedNodes.map(node => node.data);
-    this.remove.emit(selectedData);
+    this.duplicate.emit(selectedData);
   }
 
   getColumnKeysAndHeaders(columnkeys: Array<any>): String{    
@@ -160,9 +175,10 @@ export class DataGridComponent {
   {
     this.getAll()
     .subscribe((items) => {
-        console.log(items);
         this.rowData = items;
         setTimeout(()=>{this.gridApi.sizeColumnsToFit()}, 30);
+        this.gridApi.setRowData(this.rowData);
+        console.log(this.rowData);
     });
   }
 

@@ -1,0 +1,5 @@
+
+  <div *ngFor="let getAll of getAllsTable; let i = index">
+    <app-data-grid [columnDefs]="columnDefsTable[i]" [themeGrid]='themeGrid'  [getAll]='getAll' [globalSearch]=true>
+    </app-data-grid>
+  </div>

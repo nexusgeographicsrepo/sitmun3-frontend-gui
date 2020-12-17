@@ -17,6 +17,7 @@ import localeCa from '@angular/common/locales/ca';
 import localeEs from '@angular/common/locales/es';
 import { SitmunFrontendCoreModule } from '@sitmun/frontend-core';
 import { DataGridComponent } from './data-grid/data-grid.component';
+
 import { AgGridModule } from '@ag-grid-community/angular';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,6 +25,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { BtnEditRenderedComponent } from './btn-edit-rendered/btn-edit-rendered.component';
 
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { DialogGridComponent } from './dialog-grid/dialog-grid.component';
 
 registerLocaleData(localeCa, 'ca');
 registerLocaleData(localeEs, 'es');
@@ -62,6 +64,7 @@ export function createTranslateLoader(http: HttpClient) {
   declarations: [
     DataGridComponent,
     BtnEditRenderedComponent,
+    DialogGridComponent,
   ],
   entryComponents: [
   ],
@@ -76,6 +79,7 @@ export function createTranslateLoader(http: HttpClient) {
     TranslateModule,
     ReactiveFormsModule,
     DataGridComponent,
+    DialogGridComponent,
     SitmunFrontendCoreModule
   ]
 })

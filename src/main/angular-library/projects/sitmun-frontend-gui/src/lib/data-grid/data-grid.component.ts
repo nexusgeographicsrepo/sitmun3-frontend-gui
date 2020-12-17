@@ -14,6 +14,7 @@ import {TranslateService} from '@ngx-translate/core';
 export class DataGridComponent implements OnInit {
  
   private _eventRefreshSubscription: any;
+  private _eventGetSelectedRowsSubscription: any;
   modules: Module[] = AllCommunityModules;
   searchValue: string;
   private gridApi;
@@ -31,6 +32,7 @@ export class DataGridComponent implements OnInit {
   gridOptions;
 
   @Input() eventRefreshSubscription: Observable <boolean> ;
+  @Input() eventGetSelectedRowsSubscription: Observable <boolean> ;
   @Input() frameworkComponents: any;
   @Input() columnDefs: any[];
   @Input() getAll: () => Observable<any>;
@@ -50,7 +52,7 @@ export class DataGridComponent implements OnInit {
   @Output() remove: EventEmitter<any[]>;
   @Output() new: EventEmitter<number>;
   @Output() sendChanges: EventEmitter<any[]>;
-  @Output() duplicate: EventEmitter<any[]>;
+  @Output() getSelectedRows: EventEmitter<any[]>;
 
 
   constructor(public translate: TranslateService) {
@@ -59,7 +61,7 @@ export class DataGridComponent implements OnInit {
     this.remove = new EventEmitter();
     this.new = new EventEmitter();
     this.sendChanges = new EventEmitter();
-    this.duplicate = new EventEmitter();
+    this.getSelectedRows = new EventEmitter();
     this.changeCounter = 0;
     this.previousChangeCounter = 0;
     this.redoCounter = 0;
@@ -110,6 +112,11 @@ export class DataGridComponent implements OnInit {
         this.getElements();
       });
     }
+    if (this.eventGetSelectedRowsSubscription) {
+      this._eventGetSelectedRowsSubscription = this.eventGetSelectedRowsSubscription.subscribe(() => {
+        this.emitSelectedRows();
+      });
+    }
 
 
   }
@@ -131,10 +138,10 @@ export class DataGridComponent implements OnInit {
   }
 
   
-  duplicateSelectedRows(): void{
+  emitSelectedRows(): void{
     const selectedNodes = this.gridApi.getSelectedNodes();
     const selectedData = selectedNodes.map(node => node.data);
-    this.duplicate.emit(selectedData);
+    this.getSelectedRows.emit(selectedData);
   }
 
   getColumnKeysAndHeaders(columnkeys: Array<any>): String{    

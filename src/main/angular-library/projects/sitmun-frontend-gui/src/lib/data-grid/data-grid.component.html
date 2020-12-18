@@ -1,4 +1,5 @@
     <div id=grup1 class="editDivBtns">
+        <span *ngIf="title"  [translate]="title"> </span>
         <button  mat-mini-fab class="editBtn"  *ngIf="discardChangesButton"  id="deleteChangesButton" type="button"  (click)="deleteChanges()" [disabled]="changeCounter <= 0">
             <mat-icon  fontSet="material-icons-round" > close </mat-icon>
         </button>

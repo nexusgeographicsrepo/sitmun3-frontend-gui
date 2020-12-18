@@ -18,6 +18,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { MatButtonModule } from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatMenuModule} from '@angular/material/menu';
+import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 
@@ -59,6 +60,7 @@ const appRoutes: Routes = [
         MatButtonModule,
         MatIconModule,
         MatMenuModule,
+        MatDialogModule,
 
 
         AngularHalModule.forRoot(),

@@ -1,5 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, Inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import { MatDialogRef } from '@angular/material/dialog';
+
+export interface DialogData {
+  _GetAllsTable:  Array<() => Observable<any>>;
+  _columnDefsTable: Array<any[]>;
+  _singleSelectionTable: Array<boolean>;
+}
+
 
 @Component({
   selector: 'app-dialog-grid',
@@ -8,21 +16,28 @@ import { Observable, Subject } from 'rxjs';
 })
 export class DialogGridComponent implements OnInit {
 
+  title: string;
   getAllRows: Subject<boolean> = new Subject <boolean>();
   private _addButtonClickedSubscription: any;
   tablesReceivedCounter: number;
   allRowsReceived: Array<any[]> = [];
-  @Input() themeGrid: any;
-  @Input() getAllsTable: Array<() => Observable<any>>;
-  @Input() columnDefsTable: Array<any[]>;
-  @Input() singleSelectionTable: Array<boolean>;
-  @Input() addButtonClickedSubscription: Observable <boolean> ;
 
+  //Inputs
+  themeGrid: any;
+  getAllsTable: Array<() => Observable<any>>;
+  columnDefsTable: Array<any[]>;
+  singleSelectionTable: Array<boolean>;
+  titlesTable: Array<string>;
+  addButtonClickedSubscription: Observable <boolean> ;
+
+  //Outputs
   @Output() joinTables : EventEmitter<Array<any[]>>;
 
+  
 
 
-  constructor() {
+  constructor(private dialogRef: MatDialogRef<DialogGridComponent>) {
+    
     this.joinTables = new EventEmitter();
     this.tablesReceivedCounter = 0;
    }
@@ -47,11 +62,17 @@ export class DialogGridComponent implements OnInit {
       this.tablesReceivedCounter++;
       if(this.tablesReceivedCounter === this.getAllsTable.length)
       {
-        this.joinTables.emit(this.allRowsReceived);
+        this.doAdd(this.allRowsReceived);
         console.log(this.allRowsReceived);
-        this.tablesReceivedCounter=0;
-        this.allRowsReceived = [];
       }
+  }
+
+  doAdd(rowsToAdd){
+    this.dialogRef.close({event:'Add',data: rowsToAdd});
+  }
+
+  closeDialog(){
+    this.dialogRef.close({event:'Cancel'});
   }
 
 }

@@ -22,10 +22,12 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDialogModule } from '@angular/material/dialog';
 import { BtnEditRenderedComponent } from './btn-edit-rendered/btn-edit-rendered.component';
 
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { DialogGridComponent } from './dialog-grid/dialog-grid.component';
+
 
 registerLocaleData(localeCa, 'ca');
 registerLocaleData(localeEs, 'es');
@@ -52,6 +54,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
+    MatDialogModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

@@ -47,6 +47,7 @@ export class DataGridComponent implements OnInit {
   @Input() globalSearch: boolean;
   @Input() themeGrid: any;
   @Input() singleSelection: boolean;
+  @Input() title: string;
 
 
   @Output() remove: EventEmitter<any[]>;

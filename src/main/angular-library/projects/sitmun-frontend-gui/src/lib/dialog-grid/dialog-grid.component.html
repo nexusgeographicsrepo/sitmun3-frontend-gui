@@ -1,7 +1,7 @@
 
   <div *ngFor="let getAll of getAllsTable; let i = index" style="width: 700px; height: 500px;  margin: 50px;">
     <app-data-grid 
-    [columnDefs]="columnDefsTable[i]" [themeGrid]='themeGrid'  [getAll]='getAll' [globalSearch]=true 
+    [columnDefs]="columnDefsTable[i]" [themeGrid]='themeGrid'  [getAll]='getAll' [globalSearch]=true [singleSelection]="singleSelectionTable[i]"
     [eventGetSelectedRowsSubscription]="getAllRows.asObservable()" (getSelectedRows)='joinRowsReceived($event)' >
     </app-data-grid>
   </div>

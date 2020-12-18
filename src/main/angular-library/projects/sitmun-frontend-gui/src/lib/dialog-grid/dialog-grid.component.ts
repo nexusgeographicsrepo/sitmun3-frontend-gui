@@ -15,6 +15,7 @@ export class DialogGridComponent implements OnInit {
   @Input() themeGrid: any;
   @Input() getAllsTable: Array<() => Observable<any>>;
   @Input() columnDefsTable: Array<any[]>;
+  @Input() singleSelectionTable: Array<boolean>;
   @Input() addButtonClickedSubscription: Observable <boolean> ;
 
   @Output() joinTables : EventEmitter<Array<any[]>>;

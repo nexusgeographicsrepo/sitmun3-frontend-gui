@@ -47,6 +47,7 @@ export class DataGridComponent implements OnInit {
   @Input() globalSearch: boolean;
   @Input() themeGrid: any;
   @Input() singleSelection: boolean;
+  @Input() nonEditable: boolean;
   @Input() title: string;
 
 
@@ -126,6 +127,7 @@ export class DataGridComponent implements OnInit {
 
   onGridReady(params): void{
     if (this.singleSelection) {this.gridOptions.rowSelection = 'single'}
+    if (this.nonEditable) {this.gridOptions.editable = 'false'}
     this.params = params;
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;

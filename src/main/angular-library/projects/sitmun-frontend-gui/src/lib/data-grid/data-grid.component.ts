@@ -152,7 +152,7 @@ export class DataGridComponent implements OnInit {
     if (this.columnDefs.length == 0) {return ''};
 
     let allColumnKeys=this.gridOptions.columnApi.getAllDisplayedColumns();
-    console.log(allColumnKeys);
+    // console.log(allColumnKeys);
     allColumnKeys.forEach(element => {
         if (element.userProvidedColDef.headerName !== '')
         {
@@ -171,7 +171,6 @@ export class DataGridComponent implements OnInit {
     let columnkeys:Array<any> = [];
     let customHeader:String = '';
     customHeader = this.getColumnKeysAndHeaders(columnkeys)
-    console.log(this.gridApi);
     let params = {
         onlySelected: true,
         columnKeys: columnkeys,
@@ -288,7 +287,6 @@ export class DataGridComponent implements OnInit {
 
 
   onCellValueChanged(params): void{
-
     this.params = params; 
     if (this.changeCounter > this.previousChangeCounter)
       // True if we have edited some cell or we have done a redo 
@@ -353,36 +351,52 @@ export class DataGridComponent implements OnInit {
         this.previousChangeCounter--;  //We decrement previousChangeCounter because we have done undo
     }
     else{ // Control of modifications without changes
-      if(params.oldValue !== params.value && !(params.oldValue == null && params.value === '') ) //Isn't a modification without changes
+      if( !(params.oldValue == null && params.value === ''))
       {
-        this.modificationChange = true;
-      }
-      else{ 
-        if ( this.changesMap.has(params.node.id)) //Modification without changes in en edited cell
+        let newValue: string;
+        if(params.value == null) {newValue=''}
+        else{ newValue = params.value.toString() }
+
+
+        if(params.oldValue != null)
         {
-          if(!this.undoNoChanges)
-          {
-            this.gridApi.undoCellEditing(); // Undo to delete the change without changes internally 
-            this.undoNoChanges = true;
-            this.paintCells(params, this.changesMap);  //The cell has modifications yet -> green background 
-          }
-          else { this.undoNoChanges = false; }
-
-
+          if (params.oldValue.toString() !== newValue.toString()) { this.modificationChange = true; }
+          else {this.modificationWithoutChanges(params)}
         }
-        else {
-          //With the internally undo will enter at this function, so we have to control when done the undo or not 
-          if(!this.undoNoChanges)
-          {
-            this.gridApi.undoCellEditing(); // Undo to delete the change internally
-            this.undoNoChanges = true;
-          }
-          else { this.undoNoChanges = false; }
+        if(params.oldValue == null )         {
+          if (params.oldValue !== newValue.toString()) { this.modificationChange = true; }
+          else {this.modificationWithoutChanges(params)}
         }
-
+        
       }
+      else {this.modificationWithoutChanges(params)}
+    }
+  }
+
+  modificationWithoutChanges(params: any) {
+
+    if ( this.changesMap.has(params.node.id)) //Modification without changes in en edited cell
+    {
+      if(!this.undoNoChanges)
+      {
+        this.gridApi.undoCellEditing(); // Undo to delete the change without changes internally 
+        this.undoNoChanges = true;
+        this.paintCells(params, this.changesMap);  //The cell has modifications yet -> green background 
+      }
+      else { this.undoNoChanges = false; }
+
 
     }
+    else {
+      //With the internally undo will enter at this function, so we have to control when done the undo or not 
+      if(!this.undoNoChanges)
+      {
+        this.gridApi.undoCellEditing(); // Undo to delete the change internally
+        this.undoNoChanges = true;
+      }
+      else { this.undoNoChanges = false; }
+    }
+
   }
 
   getColumnIndexByColId(api: ColumnApi, colId: string): number {

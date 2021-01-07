@@ -40,7 +40,7 @@ export class DialogGridComponent implements OnInit {
   constructor(private dialogRef: MatDialogRef<DialogGridComponent>) {
     
     this.joinTables = new EventEmitter();
-    this.nonEditable = true;
+    // this.nonEditable = true;
     this.tablesReceivedCounter = 0;
    }
 

@@ -29,9 +29,9 @@
             <mat-icon fontSet="material-icons-round" > keyboard_arrow_down </mat-icon>     
         </button>
         <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="exportData()" > {{"Export" | translate}} </button>
-            <button mat-menu-item (click)="emitSelectedRows()"> {{"Duplicate" | translate}}</button>
-            <button mat-menu-item> {{"Search/Replace" | translate}}</button>
+            <button mat-menu-item *ngIf="!hideExportButton" (click)="exportData()" > {{"Export" | translate}} </button>
+            <button mat-menu-item *ngIf="!hideDuplicateButton" (click)="onDuplicateButtonClicked()"> {{"Duplicate" | translate}}</button>
+            <button mat-menu-item *ngIf="!hideSearchReplaceButton"> {{"Search/Replace" | translate}}</button>
         </mat-menu>  
             
 
@@ -40,7 +40,7 @@
             <span  [translate]="'New'"> </span>           
         </button>
 
-        <button  *ngIf="addButton" mat-stroked-button id="newButton"  (click)="newData()">
+        <button  *ngIf="addButton" mat-stroked-button id="newButton"  (click)="onAddButtonClicked()">
             <mat-icon fontSet="material-icons-round"> add_circle_outline </mat-icon>      
             <span  [translate]="'Add'"> </span>           
         </button>

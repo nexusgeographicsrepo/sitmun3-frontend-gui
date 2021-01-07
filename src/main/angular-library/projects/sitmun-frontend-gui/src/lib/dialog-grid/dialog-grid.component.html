@@ -3,7 +3,7 @@
   <div *ngFor="let getAll of getAllsTable; let i = index" style="width: 450px; height: 300px;  margin: 50px;">
     <app-data-grid 
     [columnDefs]="columnDefsTable[i]" [themeGrid]='themeGrid'  [getAll]='getAll' [globalSearch]=true [singleSelection]="singleSelectionTable[i]"
-    [title]="titlesTable[i]" [nonEditable]="nonEditable" [eventGetSelectedRowsSubscription]="getAllRows.asObservable()" (getSelectedRows)='joinRowsReceived($event)' >
+    [title]="titlesTable[i]" [nonEditable]='nonEditable' [eventGetSelectedRowsSubscription]="getAllRows.asObservable()" (getSelectedRows)='joinRowsReceived($event)' >
     </app-data-grid>
   </div>
 </mat-dialog-content>

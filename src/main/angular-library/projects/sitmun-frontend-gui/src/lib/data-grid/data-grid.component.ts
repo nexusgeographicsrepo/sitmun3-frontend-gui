@@ -49,11 +49,16 @@ export class DataGridComponent implements OnInit {
   @Input() singleSelection: boolean;
   @Input() nonEditable: boolean;
   @Input() title: string;
+  @Input() hideExportButton: boolean;
+  @Input() hideDuplicateButton: boolean;
+  @Input() hideSearchReplaceButton: boolean;
 
 
   @Output() remove: EventEmitter<any[]>;
   @Output() new: EventEmitter<number>;
+  @Output() add: EventEmitter<number>;
   @Output() sendChanges: EventEmitter<any[]>;
+  @Output() duplicate: EventEmitter<any[]>;
   @Output() getSelectedRows: EventEmitter<any[]>;
 
 
@@ -62,8 +67,10 @@ export class DataGridComponent implements OnInit {
 
     this.remove = new EventEmitter();
     this.new = new EventEmitter();
+    this.add = new EventEmitter();
     this.sendChanges = new EventEmitter();
     this.getSelectedRows = new EventEmitter();
+    this.duplicate = new EventEmitter();
     this.changeCounter = 0;
     this.previousChangeCounter = 0;
     this.redoCounter = 0;
@@ -72,7 +79,7 @@ export class DataGridComponent implements OnInit {
         sortable: true,
         flex: 1,
         filter: true,
-        editable: true,
+        editable: !this.nonEditable,
         cellStyle: {backgroundColor: '#FFFFFF'},
       },
       columnTypes: {
@@ -127,7 +134,7 @@ export class DataGridComponent implements OnInit {
 
   onGridReady(params): void{
     if (this.singleSelection) {this.gridOptions.rowSelection = 'single'}
-    if (this.nonEditable) {this.gridOptions.editable = 'false'}
+    // if (this.nonEditable) {this.gridOptions.defaultColDef.editable = false}
     this.params = params;
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
@@ -217,6 +224,20 @@ export class DataGridComponent implements OnInit {
   {
     this.gridApi.stopEditing(false);
     this.new.emit(-1);
+  }
+
+  onAddButtonClicked(): void
+  {
+    this.gridApi.stopEditing(false);
+    this.add.emit(-1);
+  }
+
+  onDuplicateButtonClicked(): void
+  {
+    this.gridApi.stopEditing(false);
+    const selectedNodes = this.gridApi.getSelectedNodes();
+    const selectedData = selectedNodes.map(node => node.data);
+    this.duplicate.emit(selectedData);
   }
 
 

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AllCommunityModules, ColumnApi, Module } from '@ag-grid-community/all-modules';
 import {TranslateService} from '@ngx-translate/core';
+import {BtnEditRenderedComponent} from '../btn-edit-rendered/btn-edit-rendered.component';
 
 @Component({
   selector: 'app-data-grid',
@@ -30,6 +31,7 @@ export class DataGridComponent implements OnInit {
   modificationChange = false;
   undoNoChanges = false; // Boolean that indicates if an undo hasn't modifications
   gridOptions;
+
 
   @Input() eventRefreshSubscription: Observable <boolean> ;
   @Input() eventGetSelectedRowsSubscription: Observable <boolean> ;
@@ -64,6 +66,10 @@ export class DataGridComponent implements OnInit {
 
   constructor(public translate: TranslateService) {
     this.translate = translate;
+
+    this.frameworkComponents = {
+      btnEditRendererComponent: BtnEditRenderedComponent
+    };
 
     this.remove = new EventEmitter();
     this.new = new EventEmitter();

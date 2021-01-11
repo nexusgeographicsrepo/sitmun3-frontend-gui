@@ -15,6 +15,7 @@ export class DataGridComponent implements OnInit {
  
   private _eventRefreshSubscription: any;
   private _eventGetSelectedRowsSubscription: any;
+  private _eventGetAllRowsSubscription: any;
   modules: Module[] = AllCommunityModules;
   searchValue: string;
   private gridApi;
@@ -33,6 +34,8 @@ export class DataGridComponent implements OnInit {
 
   @Input() eventRefreshSubscription: Observable <boolean> ;
   @Input() eventGetSelectedRowsSubscription: Observable <boolean> ;
+  @Input() eventGetAllRowsSubscription: Observable <boolean> ;
+  @Input() eventAddItemsSubscription: Observable <any[]> ;
   @Input() frameworkComponents: any;
   @Input() columnDefs: any[];
   @Input() getAll: () => Observable<any>;
@@ -60,6 +63,7 @@ export class DataGridComponent implements OnInit {
   @Output() sendChanges: EventEmitter<any[]>;
   @Output() duplicate: EventEmitter<any[]>;
   @Output() getSelectedRows: EventEmitter<any[]>;
+  @Output() getAllRows: EventEmitter<any[]>;
 
 
   constructor(public translate: TranslateService) {
@@ -71,6 +75,7 @@ export class DataGridComponent implements OnInit {
     this.sendChanges = new EventEmitter();
     this.getSelectedRows = new EventEmitter();
     this.duplicate = new EventEmitter();
+    this.getAllRows = new EventEmitter();
     this.changeCounter = 0;
     this.previousChangeCounter = 0;
     this.redoCounter = 0;
@@ -126,6 +131,22 @@ export class DataGridComponent implements OnInit {
         this.emitSelectedRows();
       });
     }
+    if (this.eventGetAllRowsSubscription) {
+      this._eventGetAllRowsSubscription = this.eventGetAllRowsSubscription.subscribe(() => {
+        this.emitAllRows();
+      });
+    }
+
+    if(this.eventAddItemsSubscription)
+    {
+      this.eventAddItemsSubscription.subscribe(
+        (items) => {
+          this.addItems(items);
+        }
+      )
+    }
+
+    
 
 
   }
@@ -152,6 +173,12 @@ export class DataGridComponent implements OnInit {
     const selectedNodes = this.gridApi.getSelectedNodes();
     const selectedData = selectedNodes.map(node => node.data);
     this.getSelectedRows.emit(selectedData);
+  }
+
+  emitAllRows(): void{
+    let rowData = [];
+    this.gridApi.forEachNode(node => rowData.push(node.data));
+    this.getSelectedRows.emit(rowData);
   }
 
   getColumnKeysAndHeaders(columnkeys: Array<any>): String{    
@@ -200,6 +227,14 @@ export class DataGridComponent implements OnInit {
         this.gridApi.setRowData(this.rowData);
         console.log(this.rowData);
     });
+  }
+
+   addItems(newItems: any[]): void {
+    console.log(newItems);
+
+    this.gridApi.updateRowData({ add: newItems });
+    console.log(this.columnDefs);
+
   }
 
   removeData(): void {

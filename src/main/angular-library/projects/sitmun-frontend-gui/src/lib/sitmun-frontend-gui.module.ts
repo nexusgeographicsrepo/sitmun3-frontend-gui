@@ -22,9 +22,11 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BtnEditRenderedComponent } from './btn-edit-rendered/btn-edit-rendered.component';
-
+import { BtnCheckboxRenderedComponent } from './btn-checkbox-rendered/btn-checkbox-rendered.component';
+import { BtnCheckboxFilterComponent } from './btn-checkbox-filter/btn-checkbox-filter.component';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { DialogGridComponent } from './dialog-grid/dialog-grid.component';
 
@@ -55,6 +57,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatIconModule,
     MatMenuModule,
     MatDialogModule,
+    MatCheckboxModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -67,6 +70,8 @@ export function createTranslateLoader(http: HttpClient) {
   declarations: [
     DataGridComponent,
     BtnEditRenderedComponent,
+    BtnCheckboxRenderedComponent,
+    BtnCheckboxFilterComponent,
     DialogGridComponent,
   ],
   entryComponents: [

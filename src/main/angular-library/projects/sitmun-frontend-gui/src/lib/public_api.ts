@@ -4,5 +4,7 @@
 export * from './data-grid/data-grid.component';
 export * from './sitmun-frontend-gui.module';
 export * from './btn-edit-rendered/btn-edit-rendered.component';
+export * from './btn-checkbox-rendered/btn-checkbox-rendered.component';
+export * from './btn-checkbox-filter/btn-checkbox-filter.component';
 export * from './dialog-grid/dialog-grid.component';
 

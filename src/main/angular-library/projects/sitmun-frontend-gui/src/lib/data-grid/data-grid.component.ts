@@ -6,6 +6,8 @@ import { map } from 'rxjs/operators';
 import { AllCommunityModules, ColumnApi, Module } from '@ag-grid-community/all-modules';
 import {TranslateService} from '@ngx-translate/core';
 import {BtnEditRenderedComponent} from '../btn-edit-rendered/btn-edit-rendered.component';
+import {BtnCheckboxRenderedComponent} from '../btn-checkbox-rendered/btn-checkbox-rendered.component';
+import {BtnCheckboxFilterComponent} from '../btn-checkbox-filter/btn-checkbox-filter.component';
 
 @Component({
   selector: 'app-data-grid',
@@ -72,7 +74,9 @@ export class DataGridComponent implements OnInit {
     this.translate = translate;
 
     this.frameworkComponents = {
-      btnEditRendererComponent: BtnEditRenderedComponent
+      btnEditRendererComponent: BtnEditRenderedComponent,
+      btnCheckboxRendererComponent: BtnCheckboxRenderedComponent,
+      btnCheckboxFilterComponent: BtnCheckboxFilterComponent
     };
 
     this.remove = new EventEmitter();

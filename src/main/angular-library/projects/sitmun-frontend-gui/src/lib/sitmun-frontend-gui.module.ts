@@ -27,6 +27,7 @@ import { BtnEditRenderedComponent } from './btn-edit-rendered/btn-edit-rendered.
 
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { DialogGridComponent } from './dialog-grid/dialog-grid.component';
+import { DialogMessageComponent } from './dialog-message/dialog-message.component';
 
 
 registerLocaleData(localeCa, 'ca');
@@ -68,6 +69,7 @@ export function createTranslateLoader(http: HttpClient) {
     DataGridComponent,
     BtnEditRenderedComponent,
     DialogGridComponent,
+    DialogMessageComponent,
   ],
   entryComponents: [
   ],
@@ -83,6 +85,7 @@ export function createTranslateLoader(http: HttpClient) {
     ReactiveFormsModule,
     DataGridComponent,
     DialogGridComponent,
+    DialogMessageComponent,
     SitmunFrontendCoreModule
   ]
 })

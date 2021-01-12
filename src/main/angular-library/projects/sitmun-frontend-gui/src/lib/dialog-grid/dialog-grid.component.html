@@ -1,6 +1,6 @@
-<h2 mat-dialog-title>{{title}}</h2>
-<mat-dialog-content class="gridDialogs" >
-  <div *ngFor="let getAll of getAllsTable; let i = index" class="appDataGridDiv">
+<h3 mat-dialog-title>{{title}}</h3>
+<mat-dialog-content class="dialogConent">
+  <div *ngFor="let getAll of getAllsTable; let i = index" class="appDialogDataGridDiv">
     <app-data-grid 
     [columnDefs]="columnDefsTable[i]" [themeGrid]='themeGrid'  [getAll]='getAll' [globalSearch]=true [singleSelection]="singleSelectionTable[i]"
     [title]="titlesTable[i]" [nonEditable]='nonEditable' [eventGetSelectedRowsSubscription]="getAllRows.asObservable()" (getSelectedRows)='joinRowsReceived($event)' >

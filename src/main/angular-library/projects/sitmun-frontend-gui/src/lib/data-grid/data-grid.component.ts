@@ -6,8 +6,13 @@ import { map } from 'rxjs/operators';
 import { AllCommunityModules, ColumnApi, Module } from '@ag-grid-community/all-modules';
 import {TranslateService} from '@ngx-translate/core';
 import {BtnEditRenderedComponent} from '../btn-edit-rendered/btn-edit-rendered.component';
+<<<<<<< HEAD
 import {BtnCheckboxRenderedComponent} from '../btn-checkbox-rendered/btn-checkbox-rendered.component';
 import {BtnCheckboxFilterComponent} from '../btn-checkbox-filter/btn-checkbox-filter.component';
+=======
+import { MatDialog } from '@angular/material/dialog';
+import { DialogMessageComponent } from '../dialog-message/dialog-message.component';
+>>>>>>> 1f3d7238edf4abb3e9faebd125d3a40060f4f06f
 
 @Component({
   selector: 'app-data-grid',
@@ -70,7 +75,8 @@ export class DataGridComponent implements OnInit {
   @Output() getAllRows: EventEmitter<any[]>;
 
 
-  constructor(public translate: TranslateService) {
+  constructor(    public dialog: MatDialog,
+    public translate: TranslateService) {
     this.translate = translate;
 
     this.frameworkComponents = {
@@ -155,10 +161,6 @@ export class DataGridComponent implements OnInit {
         }
       )
     }
-
-    
-
-
   }
 
 
@@ -188,7 +190,7 @@ export class DataGridComponent implements OnInit {
   emitAllRows(): void{
     let rowData = [];
     this.gridApi.forEachNode(node => rowData.push(node.data));
-    this.getSelectedRows.emit(rowData);
+    this.getAllRows.emit(rowData);
   }
 
   getColumnKeysAndHeaders(columnkeys: Array<any>): String{    
@@ -280,10 +282,29 @@ export class DataGridComponent implements OnInit {
   onDuplicateButtonClicked(): void
   {
     this.gridApi.stopEditing(false);
+    console.log(this.changeCounter);
+    if (this.changeCounter>0)
+    {
+      const dialogRef = this.dialog.open(DialogMessageComponent);
+      dialogRef.componentInstance.title='Caution'
+      dialogRef.componentInstance.message='If you duplicate rows without apply changes, your modifications will be overwritted, do you want to continue?'
+      dialogRef.afterClosed().subscribe(result => {
+        if(result){
+          if(result.event==='Accept') {  
+            const selectedNodes = this.gridApi.getSelectedNodes();
+            const selectedData = selectedNodes.map(node => node.data);
+            this.duplicate.emit(selectedData);
+         }
+        }
+      });
+
+  }
+  else{
     const selectedNodes = this.gridApi.getSelectedNodes();
     const selectedData = selectedNodes.map(node => node.data);
     this.duplicate.emit(selectedData);
   }
+}
 
 
   applyChanges(): void

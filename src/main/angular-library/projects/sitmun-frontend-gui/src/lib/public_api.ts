@@ -7,4 +7,5 @@ export * from './btn-edit-rendered/btn-edit-rendered.component';
 export * from './btn-checkbox-rendered/btn-checkbox-rendered.component';
 export * from './btn-checkbox-filter/btn-checkbox-filter.component';
 export * from './dialog-grid/dialog-grid.component';
+export * from './dialog-message/dialog-message.component'
 

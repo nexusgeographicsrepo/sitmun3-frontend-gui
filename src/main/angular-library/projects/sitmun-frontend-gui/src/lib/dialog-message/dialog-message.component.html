@@ -1,0 +1,10 @@
+<h2 mat-dialog-title>{{title}}</h2>
+<mat-dialog-content class="mat-typography">
+  <p>
+    {{message}}
+  </p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button  (click)="closeDialog()">{{"Cancel" | translate}}</button>
+  <button mat-button  (click)="doAccept()" cdkFocusInitial>{{"Accept" | translate}}</button>
+</mat-dialog-actions>

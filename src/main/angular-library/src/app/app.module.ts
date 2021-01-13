@@ -21,6 +21,7 @@ import {MatMenuModule} from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { DialogMessageComponent } from '../../projects/sitmun-frontend-gui/src/lib/dialog-message/dialog-message.component';
+import { DialogDragAndDropComponent } from '../../projects/sitmun-frontend-gui/src/lib/dialog-drag-and-drop/dialog-drag-and-drop.component';
 
 
 
@@ -45,6 +46,7 @@ const appRoutes: Routes = [
         AppComponent,
         HomeComponent,
         DialogMessageComponent,
+        DialogDragAndDropComponent,
     ],
     imports: [
         BrowserModule,

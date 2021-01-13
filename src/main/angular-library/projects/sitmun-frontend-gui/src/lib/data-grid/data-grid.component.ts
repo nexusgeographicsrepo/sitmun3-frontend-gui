@@ -6,13 +6,10 @@ import { map } from 'rxjs/operators';
 import { AllCommunityModules, ColumnApi, Module } from '@ag-grid-community/all-modules';
 import {TranslateService} from '@ngx-translate/core';
 import {BtnEditRenderedComponent} from '../btn-edit-rendered/btn-edit-rendered.component';
-<<<<<<< HEAD
 import {BtnCheckboxRenderedComponent} from '../btn-checkbox-rendered/btn-checkbox-rendered.component';
 import {BtnCheckboxFilterComponent} from '../btn-checkbox-filter/btn-checkbox-filter.component';
-=======
 import { MatDialog } from '@angular/material/dialog';
 import { DialogMessageComponent } from '../dialog-message/dialog-message.component';
->>>>>>> 1f3d7238edf4abb3e9faebd125d3a40060f4f06f
 
 @Component({
   selector: 'app-data-grid',

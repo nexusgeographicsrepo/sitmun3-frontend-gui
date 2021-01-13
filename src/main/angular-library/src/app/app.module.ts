@@ -6,7 +6,7 @@ import { environment } from '../environments/environment';
 import { ExternalConfigurationService } from './ExternalConfigurationService';
 import { AngularHalModule } from '@sitmun/frontend-core';
 import { HomeComponent } from './home/home.component';
-import {AuthInterceptor, AuthExpiredInterceptor, LoginService, SitmunFrontendCoreModule} from '@sitmun/frontend-core';
+import { SitmunFrontendCoreModule} from '@sitmun/frontend-core';
 import { SitmunFrontendGuiModule } from 'sitmun-frontend-gui';
 import { registerLocaleData } from '@angular/common';
 import localeCa from '@angular/common/locales/ca';
@@ -65,8 +65,6 @@ const appRoutes: Routes = [
         MatIconModule,
         MatMenuModule,
         MatDialogModule,
-
-
         AngularHalModule.forRoot(),
         RouterModule.forRoot(appRoutes)
     ],
@@ -75,18 +73,6 @@ const appRoutes: Routes = [
     ],
     providers: [
         { provide: 'ExternalConfigurationService', useClass: ExternalConfigurationService },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: AuthInterceptor,
-            multi: true
-        }
-        , {
-            provide: HTTP_INTERCEPTORS,
-            useClass: AuthExpiredInterceptor,
-            multi: true
-        }
-
-
     ],
     bootstrap: [AppComponent]
 })

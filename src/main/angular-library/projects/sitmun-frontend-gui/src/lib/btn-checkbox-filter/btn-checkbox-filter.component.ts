@@ -1,4 +1,5 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
+import {FormControl, Validators} from '@angular/forms';
 import {
   IAfterGuiAttachedParams,
   IDoesFilterPassParams,
@@ -7,8 +8,9 @@ import {
   IFloatingFilter,
   NumberFilter,
   NumberFilterModel,
+  IFloatingFilterParams,
 } from '@ag-grid-community/all-modules';
-
+import { AgFrameworkComponent } from '@ag-grid-community/angular';
 import { IFilterAngularComp } from '@ag-grid-community/angular';
 
 @Component({
@@ -16,22 +18,25 @@ import { IFilterAngularComp } from '@ag-grid-community/angular';
   templateUrl: './btn-checkbox-filter.component.html',
   styleUrls: ['./btn-checkbox-filter.component.css']
 })
-export class BtnCheckboxFilterComponent implements IFloatingFilter  {
-
-  private params: IFilterParams;
+export class BtnCheckboxFilterComponent implements IFloatingFilter, AgFrameworkComponent<IFloatingFilterParams>   {
+  filterSelectFormControl = new FormControl('', Validators.required);
+  private params: IFloatingFilterParams;
   private valueGetter: (rowNode: RowNode) => any;
   public text: string = '';
   public currentValue: number;
   @ViewChild('input', { read: ViewContainerRef }) public input;
 
-  agInit(params: IFilterParams): void {
+  agInit(params: IFloatingFilterParams): void {
     this.params = params;
-    this.valueGetter = params.valueGetter;
+    this.valueGetter = params.filterParams.valueGetter;
+    this.params.suppressFilterButton=true;
   }
 
   isFilterActive(): boolean {
     return this.text != null && this.text !== '';
   }
+
+
 
   doesFilterPass(params: IDoesFilterPassParams): boolean {
     return this.text
@@ -64,10 +69,12 @@ export class BtnCheckboxFilterComponent implements IFloatingFilter  {
   }
 
   onChange(newValue): void {
-    if (this.text !== newValue) {
-      this.text = newValue;
-      this.params.filterChangedCallback();
-    }
+    this.params.parentFilterInstance(function (instance) {
+      (<NumberFilter>instance).onFloatingFilterChanged(
+        'contains',
+        newValue
+      );
+    });
   }
 
   onParentModelChanged(parentModel: any): void {

@@ -100,6 +100,7 @@ export class DataGridComponent implements OnInit {
         editable: !this.nonEditable,
         cellStyle: {backgroundColor: '#FFFFFF'},
         suppressMenu : true,
+        resizable: true
       },
       columnTypes: {
         dateColumn: {

@@ -15,34 +15,34 @@
     </div>
 
     <div id=grup2 class="actionsDivBtns" >
-        <label *ngIf="globalSearch" [translate]="'Search'"> </label>
+        <label *ngIf="globalSearch" [translate]="'search'"> </label>
         <input *ngIf="globalSearch"type="text" class="searchGenericInput" placeholder="" (keyup)="quickSearch()" [(ngModel)]="searchValue" ml-2 >
         <button *ngIf="deleteButton"  mat-stroked-button id="deleteButton"  (click)="removeData()">
             <mat-icon fontSet="material-icons-round" > delete </mat-icon>
-            <span  [translate]="'Remove'"> </span>
+            <span  [translate]="'remove'"> </span>
             
         </button>
 
         
         <button *ngIf="actionButton"  mat-stroked-button [matMenuTriggerFor]="menu" id="actionButton">
-            <span  [translate]="'Actions'"> </span>    
+            <span  [translate]="'actions'"> </span>    
             <mat-icon fontSet="material-icons-round" > keyboard_arrow_down </mat-icon>     
         </button>
         <mat-menu #menu="matMenu">
-            <button mat-menu-item *ngIf="!hideExportButton" (click)="exportData()" > {{"Export" | translate}} </button>
-            <button mat-menu-item *ngIf="!hideDuplicateButton" (click)="onDuplicateButtonClicked()"> {{"Duplicate" | translate}}</button>
-            <button mat-menu-item *ngIf="!hideSearchReplaceButton"> {{"Search/Replace" | translate}}</button>
+            <button mat-menu-item *ngIf="!hideExportButton" (click)="exportData()" > {{"export" | translate}} </button>
+            <button mat-menu-item *ngIf="!hideDuplicateButton" (click)="onDuplicateButtonClicked()"> {{"duplicate" | translate}}</button>
+            <button mat-menu-item *ngIf="!hideSearchReplaceButton"> {{"search/replace" | translate}}</button>
         </mat-menu>  
             
 
         <button  *ngIf="newButton" mat-stroked-button id="newButton"  (click)="newData()">
             <mat-icon fontSet="material-icons-round"> add_circle_outline </mat-icon>      
-            <span  [translate]="'New'"> </span>           
+            <span  [translate]="'new'"> </span>           
         </button>
 
         <button  *ngIf="addButton" mat-stroked-button id="newButton"  (click)="onAddButtonClicked()">
             <mat-icon fontSet="material-icons-round"> add_circle_outline </mat-icon>      
-            <span  [translate]="'Add'"> </span>           
+            <span  [translate]="'add'"> </span>           
         </button>
         
 

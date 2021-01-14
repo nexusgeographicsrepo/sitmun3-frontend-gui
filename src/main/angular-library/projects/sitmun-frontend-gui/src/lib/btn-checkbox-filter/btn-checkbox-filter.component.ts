@@ -36,8 +36,6 @@ export class BtnCheckboxFilterComponent implements IFloatingFilter, AgFrameworkC
     return this.text != null && this.text !== '';
   }
 
-
-
   doesFilterPass(params: IDoesFilterPassParams): boolean {
     return this.text
       .toLowerCase()
@@ -59,16 +57,8 @@ export class BtnCheckboxFilterComponent implements IFloatingFilter, AgFrameworkC
     this.text = model ? model.value : '';
   }
 
-  afterGuiAttached(params: IAfterGuiAttachedParams): void {
-    window.setTimeout(() => this.input.element.nativeElement.focus());
-  }
 
-  // noinspection JSMethodCanBeStatic
-  componentMethod(message: string): void {
-    alert(`Alert from PartialMatchFilterComponent: ${message}`);
-  }
-
-  onChange(newValue): void {
+ onChange(newValue): void {
     this.params.parentFilterInstance(function (instance) {
       (<NumberFilter>instance).onFloatingFilterChanged(
         'contains',

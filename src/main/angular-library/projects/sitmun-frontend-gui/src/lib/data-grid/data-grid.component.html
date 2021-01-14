@@ -1,15 +1,15 @@
     <div id=grup1 class="editDivBtns">
         <span *ngIf="title"  [translate]="title"> </span>
-        <button  mat-mini-fab class="editBtn"  *ngIf="discardChangesButton"  id="deleteChangesButton" type="button"  (click)="deleteChanges()" [disabled]="changeCounter <= 0">
+        <button title="{{ 'cancel' | translate }}" mat-mini-fab class="editBtn"  *ngIf="discardChangesButton"  id="deleteChangesButton" type="button"  (click)="deleteChanges()" [disabled]="changeCounter <= 0">
             <mat-icon  fontSet="material-icons-round" > close </mat-icon>
         </button>
-        <button mat-mini-fab class="editBtn" *ngIf="undoButton"  id="undo"  (click)="undo()" [disabled]="changeCounter <= 0" >
+        <button title="{{ 'undo' | translate }}" mat-mini-fab class="editBtn" *ngIf="undoButton"  id="undo"  (click)="undo()" [disabled]="changeCounter <= 0" >
             <mat-icon fontSet="material-icons-round" > undo </mat-icon>
         </button>
-        <button mat-mini-fab class="editBtn" *ngIf="redoButton"  id="redo"  (click)="redo()" [disabled]="redoCounter <= 0">
+        <button title="{{ 'redo' | translate }}" mat-mini-fab class="editBtn" *ngIf="redoButton"  id="redo"  (click)="redo()" [disabled]="redoCounter <= 0">
             <mat-icon fontSet="material-icons-round" > redo </mat-icon>
         </button>
-        <button mat-mini-fab class="editBtn" *ngIf="applyChangesButton"  id="applyChangesButton"  (click)="applyChanges()" [disabled]="changeCounter <= 0" >
+        <button title="{{ 'accept' | translate }}" mat-mini-fab class="editBtn" *ngIf="applyChangesButton"  id="applyChangesButton"  (click)="applyChanges()" [disabled]="changeCounter <= 0" >
             <mat-icon fontSet="material-icons-round" > check </mat-icon>
         </button>
     </div>

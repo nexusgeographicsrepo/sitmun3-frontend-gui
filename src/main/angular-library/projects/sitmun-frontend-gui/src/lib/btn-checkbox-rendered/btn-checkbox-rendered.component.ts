@@ -15,13 +15,25 @@ export class BtnCheckboxRenderedComponent implements ICellRendererAngularComp, O
   }
 
   refresh(params: any): boolean {
+    this.params = params;
+    
     return true;
   }
 
+  public invokeParentMethod() {
+    this.params.context.componentParent.methodFromParent(
+      `Row: ${this.params.node.rowIndex}, Col: ${this.params.colDef.headerName}`
+    );
+  }
+
   btnCheckedHandler(event) {
-    let checked = event.target.checked;
+    let checked = !event.target.firstElementChild.checked;
     let colId = this.params.column.colId;
+    this.params.value=checked;
+    this.params.api.undoRedoService.isFilling=true;
     this.params.node.setDataValue(colId, checked);
+
+    
   }
 
   getParams(){

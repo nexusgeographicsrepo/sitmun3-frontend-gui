@@ -3,13 +3,16 @@ import { Component, OnInit, NgModule, Input, Output, EventEmitter } from '@angul
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AllCommunityModules, ColumnApi, Module } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, ColumnApi, Module} from '@ag-grid-community/all-modules';
+
 import {TranslateService} from '@ngx-translate/core';
 import {BtnEditRenderedComponent} from '../btn-edit-rendered/btn-edit-rendered.component';
 import {BtnCheckboxRenderedComponent} from '../btn-checkbox-rendered/btn-checkbox-rendered.component';
 import {BtnCheckboxFilterComponent} from '../btn-checkbox-filter/btn-checkbox-filter.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogMessageComponent } from '../dialog-message/dialog-message.component';
+
+
 
 @Component({
   selector: 'app-data-grid',
@@ -22,6 +25,9 @@ export class DataGridComponent implements OnInit {
   private _eventGetSelectedRowsSubscription: any;
   private _eventGetAllRowsSubscription: any;
   modules: Module[] = AllCommunityModules;
+
+
+  UndeRedoActions
   searchValue: string;
   private gridApi;
   private gridColumnApi;
@@ -327,16 +333,20 @@ export class DataGridComponent implements OnInit {
 
   deleteChanges(): void
   {
-    for (let i = 0; i < this.changeCounter; i++)
+    this.gridApi.stopEditing(false);
+
+    while(this.changeCounter>0)
     {
-      this.gridApi.undoCellEditing();
+      this.undo();
     }
-    this.changesMap.clear();
-    this.previousChangeCounter = 0;
-    this.changeCounter = 0;
-    this.redoCounter = 0;
-    this.params.colDef.cellStyle =  {backgroundColor: '#FFFFFF'};
-    this.gridApi.redrawRows();
+    
+      this.changesMap.clear();
+      //this.previousChangeCounter = 0;
+        this.redoCounter = 0;
+    
+
+    //this.params.colDef.cellStyle =  {backgroundColor: '#FFFFFF'};
+    //this.gridApi.redrawRows();
   }
 
 
@@ -373,6 +383,7 @@ export class DataGridComponent implements OnInit {
 
 
   onCellValueChanged(params): void{
+    console.log("value Change")
     this.params = params; 
     if (this.changeCounter > this.previousChangeCounter)
       // True if we have edited some cell or we have done a redo 
@@ -443,16 +454,20 @@ export class DataGridComponent implements OnInit {
         if(params.value == null) {newValue=''}
         else{ newValue = params.value.toString() }
 
-
-        if(params.oldValue != null)
-        {
-          if (params.oldValue.toString() !== newValue.toString()) { this.modificationChange = true; }
+          if ((params.oldValue!=undefined && params.oldValue!=null && params.oldValue.toString() !== newValue.toString()) 
+              || ((params.oldValue==undefined || params.oldValue == null) && newValue!=null)) { 
+             
+            this.modificationChange = true; 
+            if(params.colDef.cellRenderer=="btnCheckboxRendererComponent"){
+              var undoRedoActions={
+                cellValueChanges: this.gridApi.undoRedoService.cellValueChanges
+              };
+              this.gridApi.undoRedoService.pushActionsToUndoStack(undoRedoActions);
+              this.gridApi.undoRedoService.isFilling=false;
+              this.onCellEditingStopped(params);
+            }
+          }
           else {this.modificationWithoutChanges(params)}
-        }
-        if(params.oldValue == null )         {
-          if (params.oldValue !== newValue.toString()) { this.modificationChange = true; }
-          else {this.modificationWithoutChanges(params)}
-        }
         
       }
       else {this.modificationWithoutChanges(params)}

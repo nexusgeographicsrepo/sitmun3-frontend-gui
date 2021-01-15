@@ -179,7 +179,7 @@ export class DataGridComponent implements OnInit {
     this.getElements();
     this.gridApi.sizeColumnsToFit();
     for (const col of this.columnDefs) {
-      if (col.field === 'estat') {
+      if (col.field === 'status') {
         this.statusColumn = true;
       }
     }

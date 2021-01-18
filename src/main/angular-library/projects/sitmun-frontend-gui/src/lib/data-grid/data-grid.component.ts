@@ -251,11 +251,27 @@ export class DataGridComponent implements OnInit {
 
    addItems(newItems: any[]): void {
     console.log(newItems);
+    let itemsToAdd: Array<any> = [];
+    
+    newItems.forEach(item => {
 
-    this.gridApi.updateRowData({ add: newItems });
+    if( item.id==undefined || (this.rowData.find(element => element.id === item.id)) == undefined )
+    {
+      itemsToAdd.push(item);
+      this.rowData.push(item);
+    }
+    else{
+      console.log(`Item with the ID ${item.id} already exists`)
+    }
+    });
+    this.gridApi.updateRowData({ add: itemsToAdd });
+
     console.log(this.columnDefs);
-
+    // params.oldValue!=undefined
   }
+
+
+
 
   removeData(): void {
     this.gridApi.stopEditing(false);

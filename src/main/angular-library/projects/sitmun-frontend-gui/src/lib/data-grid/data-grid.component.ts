@@ -178,8 +178,11 @@ export class DataGridComponent implements OnInit {
     this.gridColumnApi = params.columnApi;
     this.getElements();
     this.gridApi.sizeColumnsToFit();
+    console.log(this.columnDefs);
     for (const col of this.columnDefs) {
       if (col.field === 'status') {
+        console.log("status column true");
+
         this.statusColumn = true;
       }
     }
@@ -265,7 +268,7 @@ export class DataGridComponent implements OnInit {
       const selectedRows = selectedNodes.map(node => node.rowIndex);
 
       for (const id of selectedRows){
-          this.gridApi.getRowNode(id).data.estat ='Eliminat';
+          this.gridApi.getRowNode(id).data.status ='Deleted';
         }
       this.gridOptions.api.refreshCells();
     }

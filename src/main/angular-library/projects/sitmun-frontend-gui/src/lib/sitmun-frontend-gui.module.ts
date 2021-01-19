@@ -27,8 +27,10 @@ import { BtnCheckboxRenderedComponent } from './btn-checkbox-rendered/btn-checkb
 import { BtnCheckboxFilterComponent } from './btn-checkbox-filter/btn-checkbox-filter.component';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { DialogGridComponent } from './dialog-grid/dialog-grid.component';
+import { DialogFormComponent } from './dialog-form/dialog-form.component';
 import { DialogMessageComponent } from './dialog-message/dialog-message.component';
 import { DataTreeComponent } from './data-tree/data-tree.component';
+
 
 registerLocaleData(localeCa, 'ca');
 registerLocaleData(localeEs, 'es');
@@ -69,6 +71,7 @@ export function createTranslateLoader(http: HttpClient) {
     BtnCheckboxRenderedComponent,
     BtnCheckboxFilterComponent,
     DialogGridComponent,
+    DialogFormComponent,
     DialogMessageComponent,
   ],
   entryComponents: [
@@ -86,6 +89,7 @@ export function createTranslateLoader(http: HttpClient) {
     DataGridComponent,
     DataTreeComponent,
     DialogGridComponent,
+    DialogFormComponent,
     DialogMessageComponent,
     SitmunFrontendCoreModule
   ]

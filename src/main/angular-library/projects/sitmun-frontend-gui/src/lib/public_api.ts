@@ -9,4 +9,5 @@ export * from './btn-checkbox-filter/btn-checkbox-filter.component';
 export * from './dialog-grid/dialog-grid.component';
 export * from './dialog-message/dialog-message.component';
 export * from './data-tree/data-tree.component';
+export * from './dialog-form/dialog-form.component';
 

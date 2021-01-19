@@ -178,8 +178,11 @@ export class DataGridComponent implements OnInit {
     this.gridColumnApi = params.columnApi;
     this.getElements();
     this.gridApi.sizeColumnsToFit();
+    console.log(this.columnDefs);
     for (const col of this.columnDefs) {
-      if (col.field === 'estat') {
+      if (col.field === 'status') {
+        console.log("status column true");
+
         this.statusColumn = true;
       }
     }
@@ -248,11 +251,27 @@ export class DataGridComponent implements OnInit {
 
    addItems(newItems: any[]): void {
     console.log(newItems);
+    let itemsToAdd: Array<any> = [];
+    
+    newItems.forEach(item => {
 
-    this.gridApi.updateRowData({ add: newItems });
+    if( item.id==undefined || (this.rowData.find(element => element.id === item.id)) == undefined )
+    {
+      itemsToAdd.push(item);
+      this.rowData.push(item);
+    }
+    else{
+      console.log(`Item with the ID ${item.id} already exists`)
+    }
+    });
+    this.gridApi.updateRowData({ add: itemsToAdd });
+
     console.log(this.columnDefs);
-
+    // params.oldValue!=undefined
   }
+
+
+
 
   removeData(): void {
     this.gridApi.stopEditing(false);
@@ -265,7 +284,7 @@ export class DataGridComponent implements OnInit {
       const selectedRows = selectedNodes.map(node => node.rowIndex);
 
       for (const id of selectedRows){
-          this.gridApi.getRowNode(id).data.estat ='Eliminat';
+          this.gridApi.getRowNode(id).data.status ='Deleted';
         }
       this.gridOptions.api.refreshCells();
     }
@@ -397,6 +416,7 @@ export class DataGridComponent implements OnInit {
             const addMap: Map<string, number> = new Map<string, number>();
             addMap.set(params.colDef.field, 1)
             this.changesMap.set(params.node.id, addMap);
+            if(this.statusColumn) {this.gridApi.getRowNode(params.node.id).data.status ='Modified'};
           }
           else{
             if (! this.changesMap.get(params.node.id).has(params.colDef.field))
@@ -427,7 +447,7 @@ export class DataGridComponent implements OnInit {
           if(this.changesMap.get(params.node.id).size === 0) { // No more modifications in this row
             this.changesMap.delete(params.node.id);
             const row = this.gridApi.getDisplayedRowAtIndex(params.rowIndex);
-
+            if(this.statusColumn) {this.gridApi.getRowNode(params.node.id).data.status =''};
             // We paint it white
             this.gridApi.redrawRows({rowNodes: [row]});
 

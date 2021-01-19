@@ -19,18 +19,16 @@ import { SitmunFrontendCoreModule } from '@sitmun/frontend-core';
 import { DataGridComponent } from './data-grid/data-grid.component';
 
 import { AgGridModule } from '@ag-grid-community/angular';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialogModule } from '@angular/material/dialog';
+
+import {MaterialModule} from './material-module';
+
 import { BtnEditRenderedComponent } from './btn-edit-rendered/btn-edit-rendered.component';
 import { BtnCheckboxRenderedComponent } from './btn-checkbox-rendered/btn-checkbox-rendered.component';
 import { BtnCheckboxFilterComponent } from './btn-checkbox-filter/btn-checkbox-filter.component';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { DialogGridComponent } from './dialog-grid/dialog-grid.component';
 import { DialogMessageComponent } from './dialog-message/dialog-message.component';
-
+import { DataTreeComponent } from './data-tree/data-tree.component';
 
 registerLocaleData(localeCa, 'ca');
 registerLocaleData(localeEs, 'es');
@@ -54,11 +52,7 @@ export function createTranslateLoader(http: HttpClient) {
     BrowserAnimationsModule,
     AgGridModule.withComponents([]),
     SitmunFrontendCoreModule,
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule,
-    MatDialogModule,
-    MatCheckboxModule,
+    MaterialModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -70,6 +64,7 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   declarations: [
     DataGridComponent,
+    DataTreeComponent,
     BtnEditRenderedComponent,
     BtnCheckboxRenderedComponent,
     BtnCheckboxFilterComponent,
@@ -89,6 +84,7 @@ export function createTranslateLoader(http: HttpClient) {
     TranslateModule,
     ReactiveFormsModule,
     DataGridComponent,
+    DataTreeComponent,
     DialogGridComponent,
     DialogMessageComponent,
     SitmunFrontendCoreModule

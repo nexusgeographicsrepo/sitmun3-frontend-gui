@@ -12,9 +12,7 @@ export class DialogFormComponent implements OnInit {
   form: FormGroup;
   title: string;
   HTMLReceived;
-  constructor(private dialogRef: MatDialogRef<DialogFormComponent>) {
-    this.form = new FormGroup({});
-   }
+  constructor(private dialogRef: MatDialogRef<DialogFormComponent>) {}
 
   ngOnInit(): void {
 
@@ -22,7 +20,7 @@ export class DialogFormComponent implements OnInit {
 
 
   doAdd(){
-    this.dialogRef.close({event:'Add',data: this.form.value});
+    this.dialogRef.close({event:'Add'});
   }
 
   closeDialog(){

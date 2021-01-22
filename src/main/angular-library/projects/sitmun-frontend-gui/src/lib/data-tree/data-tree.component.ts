@@ -1,5 +1,5 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { Component, Injectable, Input } from '@angular/core';
+import { Component, EventEmitter, Injectable, Input, Output } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
@@ -39,7 +39,6 @@ export class FileFlatNode {
 @Injectable()
 export class FileDatabase {
   dataChange = new BehaviorSubject<FileNode[]>([]);
-
   get data(): FileNode[] { return this.dataChange.value; }
 
   constructor() {
@@ -91,7 +90,12 @@ export class FileDatabase {
   providers: [FileDatabase]
 })
 export class DataTreeComponent {
-
+  @Output() emitNode: EventEmitter<any>;
+  @Output() emitAllNodes: EventEmitter<any>;
+  @Input() eventNodeUpdatedSubscription: Observable <any> ;
+  @Input() eventGetAllRowsSubscription: Observable <any> ;
+  private _eventNodeUpdatedSubscription: any;
+  private _eventGetAllRowsSubscription: any;
   treeControl: FlatTreeControl<FileFlatNode>;
   treeFlattener: MatTreeFlattener<FileNode, FileFlatNode>;
   dataSource: MatTreeFlatDataSource<FileNode, FileFlatNode>;
@@ -106,6 +110,8 @@ export class DataTreeComponent {
   @Input() getAll: () => Observable<any>;
 
   constructor(public database: FileDatabase) {
+    this.emitNode = new EventEmitter();
+    this.emitAllNodes = new EventEmitter();
     this.treeFlattener = new MatTreeFlattener(this.transformer, this._getLevel,
       this._isExpandable, this._getChildren);
     this.treeControl = new FlatTreeControl<FileFlatNode>(this._getLevel, this._isExpandable);
@@ -114,6 +120,22 @@ export class DataTreeComponent {
   }
 
   ngOnInit(){
+
+    if(this.eventNodeUpdatedSubscription)
+    {
+      this.eventNodeUpdatedSubscription.subscribe(
+        (node) => {
+          this.updateNode(node);
+        }
+      )
+    }
+
+    if (this.eventGetAllRowsSubscription) {
+      this._eventGetAllRowsSubscription = this.eventGetAllRowsSubscription.subscribe(() => {
+        this.emitAllRows();
+      });
+    }
+    
     this.getAll()
     .subscribe((items) => {
       this.treeData = items;
@@ -155,6 +177,22 @@ export class DataTreeComponent {
     return result;
   }
 
+
+   findNodeSiblings(arr: Array<any>, id: string): Array<any> {
+    let result, subResult;
+    arr.forEach((item, i) => {
+      if (item.id === id) {
+        result = arr;
+      } else if (item.children) {
+        subResult = this.findNodeSiblings(item.children, id);
+        if (subResult) result = subResult;
+      }
+    });
+    return result;
+
+  }
+
+
   /**
    * Handle the drop - here we rearrange the data based on the drop event,
    * then rebuild the tree.
@@ -174,29 +212,17 @@ export class DataTreeComponent {
     const changedData = JSON.parse(JSON.stringify(this.dataSource.data));
 
     // recursive find function to find siblings of node
-    function findNodeSiblings(arr: Array<any>, id: string): Array<any> {
-      let result, subResult;
-      arr.forEach((item, i) => {
-        if (item.id === id) {
-          result = arr;
-        } else if (item.children) {
-          subResult = findNodeSiblings(item.children, id);
-          if (subResult) result = subResult;
-        }
-      });
-      return result;
 
-    }
 
     // determine where to insert the node
     const nodeAtDest = visibleNodes[event.currentIndex];
-    const newSiblings = findNodeSiblings(changedData, nodeAtDest.id);
+    const newSiblings = this.findNodeSiblings(changedData, nodeAtDest.id);
     if (!newSiblings) return;
     const insertIndex = newSiblings.findIndex(s => s.id === nodeAtDest.id);
 
     // remove the node from its old place
     const node = event.item.data;
-    const siblings = findNodeSiblings(changedData, node.id);
+    const siblings = this.findNodeSiblings(changedData, node.id);
     const siblingIndex = siblings.findIndex(n => n.id === node.id);
     const nodeToInsert: FileNode = siblings.splice(siblingIndex, 1)[0];
     if (nodeAtDest.id === nodeToInsert.id) return;
@@ -284,4 +310,67 @@ export class DataTreeComponent {
     }
     return null;
   }
+
+  updateNode(nodeUpdated)
+  {
+    const dataToChange = JSON.parse(JSON.stringify(this.dataSource.data))
+    const siblings = this.findNodeSiblings(dataToChange, nodeUpdated.id);
+    let index= siblings.findIndex(node => node.id === nodeUpdated.id)
+    siblings[index]=nodeUpdated;
+    console.log(index);
+    this.rebuildTreeForData(dataToChange);
+    this.emitAllRows();
+
+  }
+
+  onEditButtonClicked(id)
+  {
+    console.log(id);
+    console.log(this.dataSource.data)
+    const changedData = JSON.parse(JSON.stringify(this.dataSource.data))
+    const siblings = this.findNodeSiblings(changedData, id);
+    console.log(siblings)
+    this.emitNode.emit( siblings.find(node => node.id === id));
+  }
+
+  emitAllRows()
+  {
+    const dataToEmit = JSON.parse(JSON.stringify(this.dataSource.data))
+    let allRows = this.getChildren(dataToEmit);
+    // dataToEmit.forEach(node => {
+    //     allRows.push(...node.children)
+    // });
+    // allRows.push(...dataToEmit);
+    
+    this.emitAllNodes.emit(allRows);
+  }
+
+  getChildren(arr)
+  {
+    let result = [];
+    let subResult;
+    arr.forEach((item, i) => {
+      if (item.children.length>0) {
+        subResult = this.getChildren(item.children);
+        if (subResult) result.push(...subResult);
+      }
+      result.push(item);
+
+    });
+    return result;
+  }
 }
+
+// findNodeSiblings(arr: Array<any>, id: string): Array<any> {
+//   let result, subResult;
+//   arr.forEach((item, i) => {
+//     if (item.id === id) {
+//       result = arr;
+//     } else if (item.children) {
+//       subResult = this.findNodeSiblings(item.children, id);
+//       if (subResult) result = subResult;
+//     }
+//   });
+//   return result;
+
+// }

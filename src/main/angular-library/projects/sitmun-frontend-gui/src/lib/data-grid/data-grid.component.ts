@@ -11,6 +11,7 @@ import {BtnCheckboxRenderedComponent} from '../btn-checkbox-rendered/btn-checkbo
 import {BtnCheckboxFilterComponent} from '../btn-checkbox-filter/btn-checkbox-filter.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogMessageComponent } from '../dialog-message/dialog-message.component';
+import { isRotatedRectIntersect } from '@syncfusion/ej2-angular-charts';
 
 
 
@@ -257,6 +258,10 @@ export class DataGridComponent implements OnInit {
 
     if( item.id==undefined || (this.rowData.find(element => element.id === item.id)) == undefined )
     {
+      if(this.statusColumn)
+      {
+        item.status='Pending creation'
+      }
       itemsToAdd.push(item);
       this.rowData.push(item);
     }

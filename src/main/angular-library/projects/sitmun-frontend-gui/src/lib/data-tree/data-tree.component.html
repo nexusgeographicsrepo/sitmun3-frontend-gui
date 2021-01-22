@@ -13,7 +13,7 @@
 		<button *ngIf="node.type ==='folder'" mat-icon-button>
 			<mat-icon>playlist_add</mat-icon>
 		</button>
-		<button mat-icon-button>
+		<button mat-icon-button (click)="onEditButtonClicked(node.id)">
 			<mat-icon>edit</mat-icon>
 		</button>
 	</mat-tree-node>
@@ -37,7 +37,7 @@
 		<button *ngIf="node.type ==='folder'" mat-icon-button>
 			<mat-icon>playlist_add</mat-icon>
 		</button>
-		<button mat-icon-button>
+		<button mat-icon-button (click)="onEditButtonClicked(node.id)">
 			<mat-icon>edit</mat-icon>
 		</button>
 	</mat-tree-node>

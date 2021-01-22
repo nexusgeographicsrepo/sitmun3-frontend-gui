@@ -1,4 +1,4 @@
-<select matNativeControl    #filterSelect [formControl]="filterSelectFormControl" (change)='onChange(filterSelect.value)'>
+<select  #filterSelect  (change)='onChange(filterSelect.value)'>
     <option value="">{{"selectAll" | translate}}</option>
     <option value="true">{{"enabled" | translate}}</option>
     <option value="false">{{"disabled" | translate}}</option>

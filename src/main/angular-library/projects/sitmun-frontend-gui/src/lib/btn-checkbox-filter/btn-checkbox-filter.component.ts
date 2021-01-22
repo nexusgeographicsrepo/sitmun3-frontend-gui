@@ -16,10 +16,10 @@ import { IFilterAngularComp } from '@ag-grid-community/angular';
 @Component({
   selector: 'app-btn-checkbox-filter',
   templateUrl: './btn-checkbox-filter.component.html',
-  styleUrls: ['./btn-checkbox-filter.component.css']
+  styleUrls: ['./btn-checkbox-filter.component.css'],
+  host: {'class': 'hostClass'}
 })
 export class BtnCheckboxFilterComponent implements IFloatingFilter, AgFrameworkComponent<IFloatingFilterParams>   {
-  filterSelectFormControl = new FormControl('', Validators.required);
   private params: IFloatingFilterParams;
   private valueGetter: (rowNode: RowNode) => any;
   public text: string = '';

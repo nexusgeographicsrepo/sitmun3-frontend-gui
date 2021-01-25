@@ -361,16 +361,4 @@ export class DataTreeComponent {
   }
 }
 
-// findNodeSiblings(arr: Array<any>, id: string): Array<any> {
-//   let result, subResult;
-//   arr.forEach((item, i) => {
-//     if (item.id === id) {
-//       result = arr;
-//     } else if (item.children) {
-//       subResult = this.findNodeSiblings(item.children, id);
-//       if (subResult) result = subResult;
-//     }
-//   });
-//   return result;
 
-// }

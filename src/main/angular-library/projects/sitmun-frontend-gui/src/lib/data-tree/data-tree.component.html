@@ -7,13 +7,13 @@
 			folder
 		</mat-icon>
 		{{node.name}}
-		<button *ngIf="node.type ==='folder'" mat-icon-button>
+		<button *ngIf="node.type ==='folder'" (click)="onButtonClicked(node.id, 'newFolder')" mat-icon-button>
 			<mat-icon>create_new_folder</mat-icon>
 		</button>
-		<button *ngIf="node.type ==='folder'" mat-icon-button>
+		<button *ngIf="node.type ==='folder'" (click)="onButtonClicked(node.id, 'newNode')" mat-icon-button>
 			<mat-icon>playlist_add</mat-icon>
 		</button>
-		<button mat-icon-button (click)="onEditButtonClicked(node.id)">
+		<button mat-icon-button (click)="onButtonClicked(node.id, 'edit')">
 			<mat-icon>edit</mat-icon>
 		</button>
 	</mat-tree-node>
@@ -31,13 +31,13 @@
 			folder
 		</mat-icon>
 		{{node.name}}
-		<button *ngIf="node.type ==='folder'" mat-icon-button>
+		<button *ngIf="node.type ==='folder'" (click)="onButtonClicked(node.id, 'newFolder')" mat-icon-button>
 			<mat-icon>create_new_folder</mat-icon>
 		</button>
-		<button *ngIf="node.type ==='folder'" mat-icon-button>
+		<button *ngIf="node.type ==='folder'" (click)="onButtonClicked(node.id, 'newNode')" mat-icon-button>
 			<mat-icon>playlist_add</mat-icon>
 		</button>
-		<button mat-icon-button (click)="onEditButtonClicked(node.id)">
+		<button mat-icon-button (click)="onButtonClicked(node.id, 'edit')">
 			<mat-icon>edit</mat-icon>
 		</button>
 	</mat-tree-node>

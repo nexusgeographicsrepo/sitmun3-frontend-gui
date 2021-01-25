@@ -64,9 +64,14 @@ export class FileDatabase {
     arrayTreeNodes.forEach((treeNode) => {
       var obj = treeNode;
       obj.children = [];
+      obj.type= (treeNode.isFolder)? "folder" : "node";
 
-      map[obj.id] = obj;
-
+      if(!map[obj.id]) {map[obj.id] = obj;}
+      else{
+        let previousChildren= map[obj.id].children
+        map[obj.id] = obj;
+        map[obj.id].children=previousChildren
+      }
       var parent = obj.parent || '-';
       if (!map[parent]) {
         map[parent] = {
@@ -90,11 +95,15 @@ export class FileDatabase {
   providers: [FileDatabase]
 })
 export class DataTreeComponent {
+  @Output() createNode: EventEmitter<any>;
+  @Output() createFolder: EventEmitter<any>;
   @Output() emitNode: EventEmitter<any>;
   @Output() emitAllNodes: EventEmitter<any>;
   @Input() eventNodeUpdatedSubscription: Observable <any> ;
+  @Input() eventCreateNodeSubscription: Observable <any> ;
   @Input() eventGetAllRowsSubscription: Observable <any> ;
   private _eventNodeUpdatedSubscription: any;
+  private _eventCreateNodeSubscription: any;
   private _eventGetAllRowsSubscription: any;
   treeControl: FlatTreeControl<FileFlatNode>;
   treeFlattener: MatTreeFlattener<FileNode, FileFlatNode>;
@@ -111,6 +120,8 @@ export class DataTreeComponent {
 
   constructor(public database: FileDatabase) {
     this.emitNode = new EventEmitter();
+    this.createNode = new EventEmitter();
+    this.createFolder = new EventEmitter();
     this.emitAllNodes = new EventEmitter();
     this.treeFlattener = new MatTreeFlattener(this.transformer, this._getLevel,
       this._isExpandable, this._getChildren);
@@ -126,6 +137,15 @@ export class DataTreeComponent {
       this.eventNodeUpdatedSubscription.subscribe(
         (node) => {
           this.updateNode(node);
+        }
+      )
+    }
+    if(this.eventCreateNodeSubscription)
+    {
+      this.eventCreateNodeSubscription.subscribe(
+        (node) => {
+          if(node.isFolder) this.createNewFolder(node);
+          else this.createNewNode(node);
         }
       )
     }
@@ -319,29 +339,53 @@ export class DataTreeComponent {
     siblings[index]=nodeUpdated;
     console.log(index);
     this.rebuildTreeForData(dataToChange);
-    this.emitAllRows();
 
   }
 
-  onEditButtonClicked(id)
+  createNewFolder(newFolder)
+  {
+    newFolder.type="folder";
+    const dataToChange = JSON.parse(JSON.stringify(this.dataSource.data))
+    if(newFolder.parent === null) {dataToChange.push(newFolder)}
+    else{
+      const siblings = this.findNodeSiblings(dataToChange, newFolder.parent);
+      let index= siblings.findIndex(node => node.id === newFolder.parent);
+      siblings[index].children.push(newFolder)
+    }
+    this.rebuildTreeForData(dataToChange);
+
+  }
+
+  createNewNode(newNode)
+  {
+    newNode.type="node";
+    const dataToChange = JSON.parse(JSON.stringify(this.dataSource.data))
+    const siblings = this.findNodeSiblings(dataToChange, newNode.parent);
+    let index= siblings.findIndex(node => node.id === newNode.parent);
+    siblings[index].children.push(newNode)
+    this.rebuildTreeForData(dataToChange);
+
+  }
+
+
+
+  onButtonClicked(id, button: string)
   {
     console.log(id);
     console.log(this.dataSource.data)
     const changedData = JSON.parse(JSON.stringify(this.dataSource.data))
     const siblings = this.findNodeSiblings(changedData, id);
     console.log(siblings)
-    this.emitNode.emit( siblings.find(node => node.id === id));
+    if(button ==='edit')  {this.emitNode.emit( siblings.find(node => node.id === id));}
+    else if(button === 'newFolder') {this.createFolder.emit( siblings.find(node => node.id === id));}
+    else if(button === 'newNode') {this.createNode.emit( siblings.find(node => node.id === id));}
+
   }
 
   emitAllRows()
   {
     const dataToEmit = JSON.parse(JSON.stringify(this.dataSource.data))
-    let allRows = this.getChildren(dataToEmit);
-    // dataToEmit.forEach(node => {
-    //     allRows.push(...node.children)
-    // });
-    // allRows.push(...dataToEmit);
-    
+    let allRows = this.getChildren(dataToEmit); 
     this.emitAllNodes.emit(allRows);
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "@sitmun/frontend-gui",
-  "version": "0.7.1",
+  "version": "0.7.5",
   "repository": "git://github.com/sitmun/sitmun-frontend-gui.git",
   "peerDependencies": {
     "@angular/common": "~10.1.6",
@@ -12,21 +12,10 @@
     "@angular/platform-browser": "^10.1.6",
     "@angular/platform-browser-dynamic": "~10.1.6",
     "@angular/router": "~10.1.6",
-    "@sitmun/frontend-core": "0.7.3",
+    "@sitmun/frontend-core": "0.8.0",
     "core-js": "^3.8.2",
     "rxjs": "~6.6.0",
-    "rxjs-compat": "^6.6.3",
     "zone.js": "~0.10.2"
   },
-  "dependencies": {
-
-  }
-
-
-
-
-
-
- 
-
+  "dependencies": {}
 }

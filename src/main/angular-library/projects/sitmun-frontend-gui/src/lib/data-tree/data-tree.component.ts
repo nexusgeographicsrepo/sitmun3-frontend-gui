@@ -72,7 +72,7 @@ export class FileDatabase {
         map[obj.id] = obj;
         map[obj.id].children=previousChildren
       }
-      var parent = obj.parent || '-';
+      var parent = obj.parent || 'root';
       if (!map[parent]) {
         map[parent] = {
           children: []
@@ -80,8 +80,11 @@ export class FileDatabase {
       }
       map[parent].children.push(obj);
     });
+    map['root'].type='folder';
+    map['root'].name='Root';
+    map['root'].isFolder=true;
 
-    return map['-'].children;
+    return map['root'];
   }
 }
 
@@ -160,7 +163,7 @@ export class DataTreeComponent {
     .subscribe((items) => {
       this.treeData = items;
       this.database.initialize(this.treeData);
-      this.database.dataChange.subscribe(data => this.rebuildTreeForData(data));
+      this.database.dataChange.subscribe(data => this.rebuildTreeForData([data]));
     });
   }
 
@@ -346,6 +349,7 @@ export class DataTreeComponent {
   {
     newFolder.type="folder";
     const dataToChange = JSON.parse(JSON.stringify(this.dataSource.data))
+    console.log(dataToChange)
     if(newFolder.parent === null) {dataToChange.push(newFolder)}
     else{
       const siblings = this.findNodeSiblings(dataToChange, newFolder.parent);
@@ -363,6 +367,8 @@ export class DataTreeComponent {
     const siblings = this.findNodeSiblings(dataToChange, newNode.parent);
     let index= siblings.findIndex(node => node.id === newNode.parent);
     siblings[index].children.push(newNode)
+    
+
     this.rebuildTreeForData(dataToChange);
 
   }
@@ -385,6 +391,7 @@ export class DataTreeComponent {
   emitAllRows()
   {
     const dataToEmit = JSON.parse(JSON.stringify(this.dataSource.data))
+    console.log(dataToEmit);
     let allRows = this.getChildren(dataToEmit); 
     this.emitAllNodes.emit(allRows);
   }

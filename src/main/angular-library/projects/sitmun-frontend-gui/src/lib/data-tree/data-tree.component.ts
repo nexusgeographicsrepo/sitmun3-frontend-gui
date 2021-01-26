@@ -340,7 +340,6 @@ export class DataTreeComponent {
     const siblings = this.findNodeSiblings(dataToChange, nodeUpdated.id);
     let index= siblings.findIndex(node => node.id === nodeUpdated.id)
     siblings[index]=nodeUpdated;
-    console.log(index);
     this.rebuildTreeForData(dataToChange);
 
   }
@@ -349,7 +348,6 @@ export class DataTreeComponent {
   {
     newFolder.type="folder";
     const dataToChange = JSON.parse(JSON.stringify(this.dataSource.data))
-    console.log(dataToChange)
     if(newFolder.parent === null) {dataToChange.push(newFolder)}
     else{
       const siblings = this.findNodeSiblings(dataToChange, newFolder.parent);
@@ -377,11 +375,8 @@ export class DataTreeComponent {
 
   onButtonClicked(id, button: string)
   {
-    console.log(id);
-    console.log(this.dataSource.data)
     const changedData = JSON.parse(JSON.stringify(this.dataSource.data))
     const siblings = this.findNodeSiblings(changedData, id);
-    console.log(siblings)
     if(button ==='edit')  {this.emitNode.emit( siblings.find(node => node.id === id));}
     else if(button === 'newFolder') {this.createFolder.emit( siblings.find(node => node.id === id));}
     else if(button === 'newNode') {this.createNode.emit( siblings.find(node => node.id === id));}
@@ -391,7 +386,6 @@ export class DataTreeComponent {
   emitAllRows()
   {
     const dataToEmit = JSON.parse(JSON.stringify(this.dataSource.data))
-    console.log(dataToEmit);
     let allRows = this.getChildren(dataToEmit); 
     this.emitAllNodes.emit(allRows);
   }

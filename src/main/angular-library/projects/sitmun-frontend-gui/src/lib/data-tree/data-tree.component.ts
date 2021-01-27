@@ -4,6 +4,7 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree'
 import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { SelectionModel } from '@angular/cdk/collections';
+import { forEach } from 'jszip';
 
 /**
  * File node data with nested structure.
@@ -377,26 +378,36 @@ export class DataTreeComponent {
   {
     const changedData = JSON.parse(JSON.stringify(this.dataSource.data))
     const siblings = this.findNodeSiblings(changedData, id);
-    if(button ==='edit')  {this.emitNode.emit( siblings.find(node => node.id === id));}
-    else if(button === 'newFolder') {this.createFolder.emit( siblings.find(node => node.id === id));}
-    else if(button === 'newNode') {this.createNode.emit( siblings.find(node => node.id === id));}
+    let nodeClicked= siblings.find(node => node.id === id);
+    if(button ==='edit')  {this.emitNode.emit(nodeClicked)}
+    else if(button === 'newFolder') {this.createFolder.emit(nodeClicked)}
+    else if(button === 'newNode') {this.createNode.emit( nodeClicked)}
+    else if(button === 'delete') {
+      let children= this.getAllChildren(nodeClicked.children)
+      children.forEach(children => {
+        children.status='Deleted';
+      });
+      nodeClicked.children=children
+      nodeClicked.status='Deleted'
+      this.rebuildTreeForData(changedData);
+    }
 
   }
 
   emitAllRows()
   {
     const dataToEmit = JSON.parse(JSON.stringify(this.dataSource.data))
-    let allRows = this.getChildren(dataToEmit); 
+    let allRows = this.getAllChildren(dataToEmit); 
     this.emitAllNodes.emit(allRows);
   }
 
-  getChildren(arr)
+  getAllChildren(arr)
   {
     let result = [];
     let subResult;
     arr.forEach((item, i) => {
       if (item.children.length>0) {
-        subResult = this.getChildren(item.children);
+        subResult = this.getAllChildren(item.children);
         if (subResult) result.push(...subResult);
       }
       result.push(item);
@@ -404,6 +415,7 @@ export class DataTreeComponent {
     });
     return result;
   }
+
 }
 
 

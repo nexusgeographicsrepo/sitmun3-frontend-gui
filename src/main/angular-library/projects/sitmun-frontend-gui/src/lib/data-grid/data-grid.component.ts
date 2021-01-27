@@ -286,7 +286,7 @@ export class DataGridComponent implements OnInit {
 
     if(this.statusColumn)
     {
-      const selectedRows = selectedNodes.map(node => node.rowIndex);
+      const selectedRows = selectedNodes.map(node => node.id);
 
       for (const id of selectedRows){
           this.gridApi.getRowNode(id).data.status ='Deleted';

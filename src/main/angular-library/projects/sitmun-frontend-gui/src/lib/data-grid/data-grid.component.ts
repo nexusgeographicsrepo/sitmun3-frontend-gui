@@ -25,7 +25,7 @@ export class DataGridComponent implements OnInit {
   private _eventRefreshSubscription: any;
   private _eventGetSelectedRowsSubscription: any;
   private _eventGetAllRowsSubscription: any;
-  private _eventGetAgGridStateSubscription: any;
+  private _eventSaveAgGridStateSubscription: any;
   modules: Module[] = AllCommunityModules;
 
 
@@ -49,7 +49,7 @@ export class DataGridComponent implements OnInit {
   @Input() eventRefreshSubscription: Observable<boolean>;
   @Input() eventGetSelectedRowsSubscription: Observable<boolean>;
   @Input() eventGetAllRowsSubscription: Observable<boolean>;
-  @Input() eventGetAgGridStateSubscription: Observable<boolean>;
+  @Input() eventSaveAgGridStateSubscription: Observable<boolean>;
   @Input() eventAddItemsSubscription: Observable<boolean>;
   @Input() frameworkComponents: any;
   @Input() columnDefs: any[];
@@ -164,8 +164,8 @@ export class DataGridComponent implements OnInit {
       });
     }
 
-    if (this.eventGetAgGridStateSubscription) {
-      this._eventGetAgGridStateSubscription = this.eventGetAgGridStateSubscription.subscribe(() => {
+    if (this.eventSaveAgGridStateSubscription) {
+      this._eventSaveAgGridStateSubscription = this.eventSaveAgGridStateSubscription.subscribe(() => {
         this.saveAgGridState();
       });
     }

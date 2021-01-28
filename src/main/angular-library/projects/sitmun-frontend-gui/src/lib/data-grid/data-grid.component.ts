@@ -421,7 +421,13 @@ export class DataGridComponent implements OnInit {
             const addMap: Map<string, number> = new Map<string, number>();
             addMap.set(params.colDef.field, 1)
             this.changesMap.set(params.node.id, addMap);
-            if(this.statusColumn) {this.gridApi.getRowNode(params.node.id).data.status ='Modified'};
+            if(this.statusColumn)
+             {
+               if(this.gridApi.getRowNode(params.node.id).data.status !=='Pending creation') 
+               {
+                  this.gridApi.getRowNode(params.node.id).data.status ='Modified'
+               }
+            }
           }
           else{
             if (! this.changesMap.get(params.node.id).has(params.colDef.field))
@@ -452,7 +458,12 @@ export class DataGridComponent implements OnInit {
           if(this.changesMap.get(params.node.id).size === 0) { // No more modifications in this row
             this.changesMap.delete(params.node.id);
             const row = this.gridApi.getDisplayedRowAtIndex(params.rowIndex);
-            if(this.statusColumn) {this.gridApi.getRowNode(params.node.id).data.status =''};
+            if(this.statusColumn) {
+              if(this.gridApi.getRowNode(params.node.id).data.status !=='Pending creation') 
+              {
+                 this.gridApi.getRowNode(params.node.id).data.status =''
+              }
+            };
             // We paint it white
             this.gridApi.redrawRows({rowNodes: [row]});
 

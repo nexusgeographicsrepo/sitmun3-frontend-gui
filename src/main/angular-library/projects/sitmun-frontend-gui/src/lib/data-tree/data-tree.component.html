@@ -16,9 +16,13 @@
 		<button *ngIf="node.type ==='folder'" (click)="onButtonClicked(node.id, 'newNode')" mat-icon-button>
 			<mat-icon>playlist_add</mat-icon>
 		</button>
+		<button mat-icon-button (click)="onButtonClicked(node.id, 'delete')">
+			<mat-icon>delete</mat-icon>
+		</button>
 		<button mat-icon-button (click)="onButtonClicked(node.id, 'edit')">
 			<mat-icon>edit</mat-icon>
 		</button>
+
 	</mat-tree-node>
 
 	<mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding  draggable="true"
@@ -43,9 +47,13 @@
 		<button *ngIf="node.type ==='folder'" (click)="onButtonClicked(node.id, 'newNode')" mat-icon-button>
 			<mat-icon>playlist_add</mat-icon>
 		</button>
+		<button mat-icon-button (click)="onButtonClicked(node.id, 'delete')">
+			<mat-icon>delete</mat-icon>
+		</button>
 		<button mat-icon-button (click)="onButtonClicked(node.id, 'edit')">
 			<mat-icon>edit</mat-icon>
 		</button>
+		
 	</mat-tree-node>
 </mat-tree>
 

@@ -1,5 +1,5 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { Component, EventEmitter, Injectable, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Injectable, Input, Output,ElementRef, ViewChild } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
@@ -14,6 +14,22 @@ export class FileNode {
   children: FileNode[];
   name: string;
   type: any;
+  active: any
+  cartographyId: any
+  cartographyName: any
+  datasetURL: any
+  description: any
+  filterGetFeatureInfo: any
+  filterGetMap: any
+  filterSelectable: any
+  isFolder: any
+  metadataURL: any
+  order: any
+  parent: any
+  queryableActive: any
+  radio: any
+  tooltip: any
+  _links: any
 }
 
 /** Flat node with expandable and level information */
@@ -39,7 +55,7 @@ export class FileFlatNode {
 @Injectable()
 export class FileDatabase {
   dataChange = new BehaviorSubject<FileNode[]>([]);
-  get data(): FileNode[] { return this.dataChange.value; }
+  get data(): any { return this.dataChange.value; }
 
   constructor() {
 
@@ -59,7 +75,7 @@ export class FileDatabase {
    * Build the file structure tree. The `value` is the Json object, or a sub-tree of a Json object.
    * The return value is the list of `FileNode`.
    */
-  buildFileTree(arrayTreeNodes: any[], level: number, parentId: string = '0'): FileNode[] {
+  buildFileTree(arrayTreeNodes: any[], level: number, parentId: string = '0'): any {
     var map = {};
     arrayTreeNodes.forEach((treeNode) => {
       var obj = treeNode;
@@ -86,6 +102,168 @@ export class FileDatabase {
 
     return map['root'];
   }
+
+  deleteItem(node: FileNode) {
+    this.deleteNode(this.data.children, node);
+    this.dataChange.next(this.data);
+  }
+
+  deleteNode(nodes: FileNode[], nodeToDelete: FileNode) {
+    const index = nodes.indexOf(nodeToDelete, 0);
+    if (index > -1) {
+      nodes.splice(index, 1);
+    } else {
+      nodes.forEach(node => {
+        if (node.children && node.children.length > 0) {
+          this.deleteNode(node.children, nodeToDelete);
+        }
+      });
+    }
+  }
+
+  copyPasteItem(from: FileNode, to: FileNode): FileNode {
+    const newItem = this.insertItem(to, from);
+
+    return newItem;
+  }
+
+  copyPasteItemAbove(from: FileNode, to: FileNode): FileNode {
+    const newItem = this.insertItemAbove(to, from);
+
+    return newItem;
+  }
+
+  copyPasteItemBelow(from: FileNode, to: FileNode): FileNode {
+    const newItem = this.insertItemBelow(to, from);
+
+    return newItem;
+  }
+
+  /** Add an item to to-do list */
+  insertItem(parent: FileNode, node: FileNode): FileNode {
+    if (!parent.children) {
+      parent.children = [];
+    }
+    const newItem = {
+      name: node.name,
+      children: node.children,
+      type: node.type,
+      id: node.id, 
+      active: node.active,
+      cartographyId: node.cartographyId,
+      cartographyName: node.cartographyName,
+      datasetURL: node.datasetURL,
+      description: node.description,
+      filterGetFeatureInfo: node.filterGetFeatureInfo,
+      filterGetMap: node.filterGetMap,
+      filterSelectable: node.filterSelectable,
+      isFolder: node.isFolder,
+      metadataURL: node.metadataURL,
+      order: node.order,
+      parent: parent.id==undefined?null:parent.id ,
+      queryableActive: node.queryableActive,
+      radio: node.radio,
+      tooltip: node.tooltip,
+      _links: node._links } as FileNode;
+    parent.children.push(newItem);
+    this.dataChange.next(this.data);
+    return newItem;
+  }
+
+  insertItemAbove(node: FileNode, nodeDrag: FileNode): FileNode {
+    const parentNode = this.getParentFromNodes(node);
+    const newItem = {
+      name: nodeDrag.name,
+      children: nodeDrag.children,
+      type: nodeDrag.type,
+      id: nodeDrag.id, 
+      active: nodeDrag.active,
+      cartographyId: nodeDrag.cartographyId,
+      cartographyName: nodeDrag.cartographyName,
+      datasetURL: nodeDrag.datasetURL,
+      description: nodeDrag.description,
+      filterGetFeatureInfo: nodeDrag.filterGetFeatureInfo,
+      filterGetMap: nodeDrag.filterGetMap,
+      filterSelectable: nodeDrag.filterSelectable,
+      isFolder: nodeDrag.isFolder,
+      metadataURL: nodeDrag.metadataURL,
+      order: nodeDrag.order,
+      parent: parentNode.id==undefined?null:parentNode.id ,
+      queryableActive: nodeDrag.queryableActive,
+      radio: nodeDrag.radio,
+      tooltip: nodeDrag.tooltip,
+      _links: nodeDrag._links } as FileNode;
+    if (parentNode != null) {
+      parentNode.children.splice(parentNode.children.indexOf(node), 0, newItem);
+    } else {
+      this.data.children.splice(this.data.children.indexOf(node), 0, newItem);
+    }
+    this.dataChange.next(this.data);
+    return newItem;
+  }
+
+  insertItemBelow(node: FileNode, nodeDrag: FileNode): FileNode {
+    const parentNode = this.getParentFromNodes(node);
+    const newItem = {
+      name: nodeDrag.name,
+      children: nodeDrag.children,
+      type: nodeDrag.type,
+      id: nodeDrag.id, 
+      active: nodeDrag.active,
+      cartographyId: nodeDrag.cartographyId,
+      cartographyName: nodeDrag.cartographyName,
+      datasetURL: nodeDrag.datasetURL,
+      description: nodeDrag.description,
+      filterGetFeatureInfo: nodeDrag.filterGetFeatureInfo,
+      filterGetMap: nodeDrag.filterGetMap,
+      filterSelectable: nodeDrag.filterSelectable,
+      isFolder: nodeDrag.isFolder,
+      metadataURL: nodeDrag.metadataURL,
+      order: nodeDrag.order,
+      parent: parentNode.id==undefined?null:parentNode.id ,
+      queryableActive: nodeDrag.queryableActive,
+      radio: nodeDrag.radio,
+      tooltip: nodeDrag.tooltip,
+      _links: nodeDrag._links } as FileNode;
+    if (parentNode != null) {
+      parentNode.children.splice(parentNode.children.indexOf(node) + 1, 0, newItem);
+    } else {
+      this.data.children.splice(this.data.children.indexOf(node) + 1, 0, newItem);
+    }
+    this.dataChange.next(this.data);
+    return newItem;
+  }
+
+  
+  getParentFromNodes(node: FileNode): FileNode {
+    for (let i = 0; i < this.data.children.length; ++i) {
+      const currentRoot = this.data.children[i];
+      const parent = this.getParent(currentRoot, node);
+      if (parent != null) {
+        return parent;
+      }
+    }
+    return null;
+  }
+
+  
+  getParent(currentRoot: FileNode, node: FileNode): FileNode {
+    if (currentRoot.children && currentRoot.children.length > 0) {
+      for (let i = 0; i < currentRoot.children.length; ++i) {
+        const child = currentRoot.children[i];
+        if (child === node) {
+          return currentRoot;
+        } else if (child.children && child.children.length > 0) {
+          const parent = this.getParent(child, node);
+          if (parent != null) {
+            return parent;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
 }
 
 /**
@@ -120,6 +298,22 @@ export class DataTreeComponent {
   treeData: any;
 
   @Input() getAll: () => Observable<any>;
+
+
+  /* Drag and drop */
+  dragNode: any;
+  dragNodeExpandOverWaitTimeMs = 1500;
+  dragNodeExpandOverNode: any;
+  dragNodeExpandOverTime: number;
+  dragNodeExpandOverArea: string;
+  @ViewChild('emptyItem') emptyItem: ElementRef;
+
+    /** Map from flat node to nested node. This helps us finding the nested node to be modified */
+    flatNodeMap = new Map<FileFlatNode, FileNode>();
+
+    /** Map from nested node to flattened node. This helps us to keep the same object for selection */
+    nestedNodeMap = new Map<FileNode, FileFlatNode>();
+
 
   constructor(public database: FileDatabase) {
     this.emitNode = new EventEmitter();
@@ -169,11 +363,14 @@ export class DataTreeComponent {
 
 
   transformer = (node: FileNode, level: number) => {
-    if(node.children.length!=0){
-      return new FileFlatNode(!!node.children, node.name, level, node.type, node.id);
-    }else{
-      return new FileFlatNode(!!undefined, node.name, level, node.type, node.id);
-    }
+    const existingNode = this.nestedNodeMap.get(node);
+    const flatNode = existingNode && existingNode.name === node.name
+      ? existingNode
+      : new FileFlatNode((node.children && node.children.length > 0),node.name,level,node.type,node.id);
+
+    this.flatNodeMap.set(flatNode, node);
+    this.nestedNodeMap.set(node, flatNode);
+    return flatNode;
   
   }
   private _getLevel = (node: FileFlatNode) => node.level;
@@ -216,75 +413,64 @@ export class DataTreeComponent {
   }
 
 
-  /**
-   * Handle the drop - here we rearrange the data based on the drop event,
-   * then rebuild the tree.
-   * */
-  drop(event: CdkDragDrop<string[]>) {
-    // console.log('origin/destination', event.previousIndex, event.currentIndex);
+  handleDragStart(event, node) {
+    // Required by Firefox (https://stackoverflow.com/questions/19055264/why-doesnt-html5-drag-and-drop-work-in-firefox)
+    event.dataTransfer.setData('foo', 'bar');
+    event.dataTransfer.setDragImage(this.emptyItem.nativeElement, 0, 0);
+    this.dragNode = node;
+    this.treeControl.collapse(node);
+  }
 
-    // ignore drops outside of the tree
-    if (!event.isPointerOverContainer) return;
+  handleDragOver(event, node) {
+    event.preventDefault();
 
-    // construct a list of visible nodes, this will match the DOM.
-    // the cdkDragDrop event.currentIndex jives with visible nodes.
-    // it calls rememberExpandedTreeNodes to persist expand state
-    const visibleNodes = this.visibleNodes();
-
-    // deep clone the data source so we can mutate it
-    const changedData = JSON.parse(JSON.stringify(this.dataSource.data));
-
-    // recursive find function to find siblings of node
-
-
-    // determine where to insert the node
-    const nodeAtDest = visibleNodes[event.currentIndex];
-    const newSiblings = this.findNodeSiblings(changedData, nodeAtDest.id);
-    if (!newSiblings) return;
-    const insertIndex = newSiblings.findIndex(s => s.id === nodeAtDest.id);
-
-    // remove the node from its old place
-    const node = event.item.data;
-    const siblings = this.findNodeSiblings(changedData, node.id);
-    const siblingIndex = siblings.findIndex(n => n.id === node.id);
-    const nodeToInsert: FileNode = siblings.splice(siblingIndex, 1)[0];
-    if (nodeAtDest.id === nodeToInsert.id) return;
-
-    // ensure validity of drop - must be same level
-    const nodeAtDestFlatNode = this.treeControl.dataNodes.find((n) => nodeAtDest.id === n.id);
-    if (this.validateDrop && nodeAtDestFlatNode.level !== node.level) {
-      alert('Items can only be moved within the same level.');
-      return;
+    // Handle node expand
+    if (node === this.dragNodeExpandOverNode) {
+      if (this.dragNode !== node && !this.treeControl.isExpanded(node)) {
+        if ((new Date().getTime() - this.dragNodeExpandOverTime) > this.dragNodeExpandOverWaitTimeMs) {
+          this.treeControl.expand(node);
+        }
+      }
+    } else {
+      this.dragNodeExpandOverNode = node;
+      this.dragNodeExpandOverTime = new Date().getTime();
     }
 
-    // insert node 
-    newSiblings.splice(insertIndex, 0, nodeToInsert);
-
-    // rebuild tree with mutated data
-    this.rebuildTreeForData(changedData);
-  }
-
-  /**
-   * Experimental - opening tree nodes as you drag over them
-   */
-  dragStart() {
-    this.dragging = true;
-  }
-  dragEnd() {
-    this.dragging = false;
-  }
-  dragHover(node: FileFlatNode) {
-    if (this.dragging) {
-      clearTimeout(this.expandTimeout);
-      this.expandTimeout = setTimeout(() => {
-        this.treeControl.expand(node);
-      }, this.expandDelay);
+    // Handle drag area
+    const percentageX = event.offsetX / event.target.clientWidth;
+    const percentageY = event.offsetY / event.target.clientHeight;
+    if (percentageY < 0.25) {
+      this.dragNodeExpandOverArea = 'above';
+    } else if (percentageY > 0.75) {
+      this.dragNodeExpandOverArea = 'below';
+    } else {
+      this.dragNodeExpandOverArea = 'center';
     }
   }
-  dragHoverEnd() {
-    if (this.dragging) {
-      clearTimeout(this.expandTimeout);
+
+  handleDrop(event, node) {
+    event.preventDefault();
+    if (node !== this.dragNode) {
+      let newItem: FileNode;
+      if (this.dragNodeExpandOverArea === 'above') {
+        newItem = this.database.copyPasteItemAbove(this.flatNodeMap.get(this.dragNode), this.flatNodeMap.get(node));
+      } else if (this.dragNodeExpandOverArea === 'below') {
+        newItem = this.database.copyPasteItemBelow(this.flatNodeMap.get(this.dragNode), this.flatNodeMap.get(node));
+      } else {
+        newItem = this.database.copyPasteItem(this.flatNodeMap.get(this.dragNode), this.flatNodeMap.get(node));
+      }
+      this.database.deleteItem(this.flatNodeMap.get(this.dragNode));
+      this.treeControl.expandDescendants(this.nestedNodeMap.get(newItem));
     }
+    this.dragNode = null;
+    this.dragNodeExpandOverNode = null;
+    this.dragNodeExpandOverTime = 0;
+  }
+
+  handleDragEnd(event) {
+    this.dragNode = null;
+    this.dragNodeExpandOverNode = null;
+    this.dragNodeExpandOverTime = 0;
   }
 
   /**

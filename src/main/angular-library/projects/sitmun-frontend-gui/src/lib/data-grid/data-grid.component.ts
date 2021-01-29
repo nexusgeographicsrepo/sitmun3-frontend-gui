@@ -150,6 +150,10 @@ export class DataGridComponent implements OnInit {
 
     if (this.eventRefreshSubscription) {
       this._eventRefreshSubscription = this.eventRefreshSubscription.subscribe(() => {
+        this.changesMap.clear();
+        this.changeCounter = 0;
+        this.previousChangeCounter = 0;
+        this.redoCounter = 0;
         this.getElements();
       });
     }

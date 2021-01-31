@@ -9,5 +9,9 @@
   "exclude": [
     "src/test.ts",
     "**/*.spec.ts"
-  ]
+  ],
+   "angularCompilerOptions": {
+    "enableIvy": false,
+    "skipLibCheck": true
+  }
 }

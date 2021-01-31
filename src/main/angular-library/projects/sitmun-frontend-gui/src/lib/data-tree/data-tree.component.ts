@@ -76,7 +76,7 @@ export class FileDatabase {
    * Build the file structure tree. The `value` is the Json object, or a sub-tree of a Json object.
    * The return value is the list of `FileNode`.
    */
-  buildFileTree(arrayTreeNodes: any[], level: number, parentId: string = '0'): any {
+  buildFileTree(arrayTreeNodes: any[], level: number): any {
     var map = {};
     arrayTreeNodes.forEach((treeNode) => {
       var obj = treeNode;
@@ -103,6 +103,7 @@ export class FileDatabase {
 
     return map['root'];
   }
+  
 
   deleteItem(node: FileNode) {
     this.deleteNode(this.data.children, node);
@@ -141,10 +142,8 @@ export class FileDatabase {
   }
 
   /** Add an item to to-do list */
-  insertItem(parent: FileNode, node: FileNode): FileNode {
-    if (!parent.children) {
-      parent.children = [];
-    }
+  
+  getNewItem(node:FileNode){
     const newItem = {
       name: node.name,
       children: node.children,
@@ -161,11 +160,21 @@ export class FileDatabase {
       isFolder: node.isFolder,
       metadataURL: node.metadataURL,
       order: node.order,
-      parent: parent.id==undefined?null:parent.id ,
       queryableActive: node.queryableActive,
       radio: node.radio,
       tooltip: node.tooltip,
       _links: node._links } as FileNode;
+
+    return newItem;
+  }
+
+  insertItem(parent: FileNode, node: FileNode): FileNode {
+    if (!parent.children) {
+      parent.children = [];
+    }
+    const newItem = this.getNewItem(node)
+    newItem.parent = parent==null || parent.id==undefined?null:parent.id;
+
     parent.children.push(newItem);
     this.dataChange.next(this.data);
     return newItem;
@@ -173,27 +182,9 @@ export class FileDatabase {
 
   insertItemAbove(node: FileNode, nodeDrag: FileNode): FileNode {
     const parentNode = this.getParentFromNodes(node);
-    const newItem = {
-      name: nodeDrag.name,
-      children: nodeDrag.children,
-      type: nodeDrag.type,
-      id: nodeDrag.id, 
-      active: nodeDrag.active,
-      cartographyId: nodeDrag.cartographyId,
-      cartographyName: nodeDrag.cartographyName,
-      datasetURL: nodeDrag.datasetURL,
-      description: nodeDrag.description,
-      filterGetFeatureInfo: nodeDrag.filterGetFeatureInfo,
-      filterGetMap: nodeDrag.filterGetMap,
-      filterSelectable: nodeDrag.filterSelectable,
-      isFolder: nodeDrag.isFolder,
-      metadataURL: nodeDrag.metadataURL,
-      order: nodeDrag.order,
-      parent: parentNode.id==undefined?null:parentNode.id ,
-      queryableActive: nodeDrag.queryableActive,
-      radio: nodeDrag.radio,
-      tooltip: nodeDrag.tooltip,
-      _links: nodeDrag._links } as FileNode;
+    const newItem = this.getNewItem(nodeDrag)
+    newItem.parent = parentNode==null || parentNode.id==undefined?null:parentNode.id;
+
     if (parentNode != null) {
       parentNode.children.splice(parentNode.children.indexOf(node), 0, newItem);
     } else {
@@ -205,27 +196,10 @@ export class FileDatabase {
 
   insertItemBelow(node: FileNode, nodeDrag: FileNode): FileNode {
     const parentNode = this.getParentFromNodes(node);
-    const newItem = {
-      name: nodeDrag.name,
-      children: nodeDrag.children,
-      type: nodeDrag.type,
-      id: nodeDrag.id, 
-      active: nodeDrag.active,
-      cartographyId: nodeDrag.cartographyId,
-      cartographyName: nodeDrag.cartographyName,
-      datasetURL: nodeDrag.datasetURL,
-      description: nodeDrag.description,
-      filterGetFeatureInfo: nodeDrag.filterGetFeatureInfo,
-      filterGetMap: nodeDrag.filterGetMap,
-      filterSelectable: nodeDrag.filterSelectable,
-      isFolder: nodeDrag.isFolder,
-      metadataURL: nodeDrag.metadataURL,
-      order: nodeDrag.order,
-      parent: parentNode.id==undefined?null:parentNode.id ,
-      queryableActive: nodeDrag.queryableActive,
-      radio: nodeDrag.radio,
-      tooltip: nodeDrag.tooltip,
-      _links: nodeDrag._links } as FileNode;
+   
+    const newItem = this.getNewItem(nodeDrag)
+    newItem.parent = parentNode==null || parentNode.id==undefined?null:parentNode.id;
+
     if (parentNode != null) {
       parentNode.children.splice(parentNode.children.indexOf(node) + 1, 0, newItem);
     } else {
@@ -451,18 +425,26 @@ export class DataTreeComponent {
 
   handleDrop(event, node) {
     event.preventDefault();
-    if (node !== this.dragNode) {
+    let toFlatNode=this.flatNodeMap.get(node);
+    let fromFlatNode=this.flatNodeMap.get(this.dragNode)
+    if (node !== this.dragNode && (this.dragNodeExpandOverArea !== 'center' || (this.dragNodeExpandOverArea === 'center' && toFlatNode.isFolder))) {
       let newItem: FileNode;
+
       if (this.dragNodeExpandOverArea === 'above') {
-        newItem = this.database.copyPasteItemAbove(this.flatNodeMap.get(this.dragNode), this.flatNodeMap.get(node));
+        newItem = this.database.copyPasteItemAbove(fromFlatNode,toFlatNode);
       } else if (this.dragNodeExpandOverArea === 'below') {
-        newItem = this.database.copyPasteItemBelow(this.flatNodeMap.get(this.dragNode), this.flatNodeMap.get(node));
+        newItem = this.database.copyPasteItemBelow(fromFlatNode,toFlatNode);
       } else {
-        newItem = this.database.copyPasteItem(this.flatNodeMap.get(this.dragNode), this.flatNodeMap.get(node));
+        newItem = this.database.copyPasteItem(fromFlatNode, toFlatNode);
       }
+      let parentLvl=this.treeControl.dataNodes.find((n) => n.id === fromFlatNode.id).level;
+      fromFlatNode.children.forEach(child=>{
+        this.treeControl.dataNodes.find((n) => n.id === child.id).level=parentLvl+1
+      });
       this.database.deleteItem(this.flatNodeMap.get(this.dragNode));
       this.treeControl.expandDescendants(this.nestedNodeMap.get(newItem));
     }
+   
     this.dragNode = null;
     this.dragNodeExpandOverNode = null;
     this.dragNodeExpandOverTime = 0;
@@ -479,31 +461,14 @@ export class DataTreeComponent {
    * after being rebuilt
    */
 
-  rebuildTreeForData(data: any) {
-    this.dataSource.data = data;
+  rebuildTreeForData(data: any[]) {
+    /*this.dataSource.data = data;
     this.expansionModel.selected.forEach((id) => {
       const node = this.treeControl.dataNodes.find((n) => n.id === id);
       this.treeControl.expand(node);
-    });
-  }
-
-  /**
-   * Not used but you might need this to programmatically expand nodes
-   * to reveal a particular node
-   */
-  private expandNodesById(flatNodes: FileFlatNode[], ids: string[]) {
-    if (!flatNodes || flatNodes.length === 0) return;
-    const idSet = new Set(ids);
-    return flatNodes.forEach((node) => {
-      if (idSet.has(node.id)) {
-        this.treeControl.expand(node);
-        let parent = this.getParentNode(node);
-        while (parent) {
-          this.treeControl.expand(parent);
-          parent = this.getParentNode(parent);
-        }
-      }
-    });
+    });*/
+    this.dataSource.data = [];
+    this.dataSource.data = data;
   }
 
   private getParentNode(node: FileFlatNode): FileFlatNode | null {

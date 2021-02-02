@@ -57,6 +57,7 @@ export class DataGridComponent implements OnInit {
   @Input() discardChangesButton: boolean;
   @Input() id: any;
   @Input() undoButton: boolean;
+  @Input() defaultColumnSorting: string;
   @Input() redoButton: boolean;
   @Input() applyChangesButton: boolean;
   @Input() deleteButton: boolean;
@@ -214,6 +215,12 @@ export class DataGridComponent implements OnInit {
 
         this.statusColumn = true;
       }
+    }
+    if(this.defaultColumnSorting){
+      const sortModel = [
+        {colId: this.defaultColumnSorting, sort: 'asc'}
+    ];
+    this.gridApi.setSortModel(sortModel);
     }
   }
 

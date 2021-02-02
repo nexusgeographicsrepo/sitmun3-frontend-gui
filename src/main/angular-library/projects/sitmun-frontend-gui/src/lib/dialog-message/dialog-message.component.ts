@@ -10,6 +10,7 @@ export class DialogMessageComponent implements OnInit {
 
   title: string;
   message: string;
+  hideCancelButton : boolean=false;
 
   constructor(private dialogRef: MatDialogRef<DialogMessageComponent>){ }
 

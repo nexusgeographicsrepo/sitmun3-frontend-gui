@@ -1,18 +1,18 @@
 <div id=grup1 class="editDivBtns">
     <span *ngIf="title" [translate]="title"> </span>
-    <button title="{{ 'cancel' | translate }}" mat-mini-fab class="mini-fab mat-red" *ngIf="discardChangesButton"
+    <button type="button" title="{{ 'cancel' | translate }}" mat-mini-fab class="mini-fab mat-red" *ngIf="discardChangesButton"
         id="deleteChangesButton" type="button" (click)="deleteChanges()" [disabled]="changeCounter <= 0">
         <mat-icon fontSet="material-icons-round"> close </mat-icon>
     </button>
-    <button title="{{ 'undo' | translate }}" mat-mini-fab class="mini-fab mat-orange" *ngIf="undoButton" id="undo"
+    <button type="button" title="{{ 'undo' | translate }}" mat-mini-fab class="mini-fab mat-orange" *ngIf="undoButton" id="undo"
         (click)="undo()" [disabled]="changeCounter <= 0">
         <mat-icon fontSet="material-icons-round"> undo </mat-icon>
     </button>
-    <button title="{{ 'redo' | translate }}" mat-mini-fab class="mini-fab mat-orange" *ngIf="redoButton" id="redo"
+    <button type="button" title="{{ 'redo' | translate }}" mat-mini-fab class="mini-fab mat-orange" *ngIf="redoButton" id="redo"
         (click)="redo()" [disabled]="redoCounter <= 0">
         <mat-icon fontSet="material-icons-round"> redo </mat-icon>
     </button>
-    <button title="{{ 'accept' | translate }}" mat-mini-fab class="mini-fab mat-green" *ngIf="applyChangesButton"
+    <button type="button" title="{{ 'accept' | translate }}" mat-mini-fab class="mini-fab mat-green" *ngIf="applyChangesButton"
         id="applyChangesButton" (click)="applyChanges()" [disabled]="changeCounter <= 0">
         <mat-icon fontSet="material-icons-round"> check </mat-icon>
     </button>
@@ -22,27 +22,27 @@
     <label *ngIf="globalSearch" [translate]="'search'"> </label>
     <input *ngIf="globalSearch" type="text" class="searchGenericInput" placeholder="" (keyup)="quickSearch()"
         [(ngModel)]="searchValue" ml-2>
-    <button *ngIf="deleteButton" mat-flat-button id="deleteButton" class="deleteButton" (click)="removeData()">
+    <button type="button" *ngIf="deleteButton" mat-flat-button id="deleteButton" class="deleteButton" (click)="removeData()">
         <mat-icon fontSet="material-icons-round"> delete </mat-icon>
         <span [translate]="'remove'"> </span>
 
     </button>
-    <button *ngIf="actionButton" mat-flat-button [matMenuTriggerFor]="menu" id="actionButton" class="actionButton">
+    <button type="button" *ngIf="actionButton" mat-flat-button [matMenuTriggerFor]="menu" id="actionButton" class="actionButton">
         <span [translate]="'actions'"> </span>
         <mat-icon fontSet="material-icons-round"> keyboard_arrow_down </mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-        <button mat-menu-item *ngIf="!hideExportButton" (click)="exportData()"> {{"export" | translate}} </button>
-        <button mat-menu-item *ngIf="!hideDuplicateButton" (click)="onDuplicateButtonClicked()"> {{"duplicate" |
+        <button type="button" mat-menu-item *ngIf="!hideExportButton" (click)="exportData()"> {{"export" | translate}} </button>
+        <button type="button" mat-menu-item *ngIf="!hideDuplicateButton" (click)="onDuplicateButtonClicked()"> {{"duplicate" |
             translate}}</button>
-        <button mat-menu-item *ngIf="!hideSearchReplaceButton"> {{"search/replace" | translate}}</button>
+        <button type="button" mat-menu-item *ngIf="!hideSearchReplaceButton"> {{"search/replace" | translate}}</button>
     </mat-menu>
 
-    <button *ngIf="newButton" mat-flat-button class="newButton" (click)="newData()">
+    <button type="button" *ngIf="newButton" mat-flat-button class="newButton" (click)="newData()">
         <mat-icon fontSet="material-icons-round"> add_circle_outline </mat-icon>
         <span [translate]="'new'"> </span>
     </button>
-    <button *ngIf="addButton" mat-flat-button class="newButton" (click)="onAddButtonClicked()">
+    <button type="button" *ngIf="addButton" mat-flat-button class="newButton" (click)="onAddButtonClicked()">
         <mat-icon fontSet="material-icons-round"> add_circle_outline </mat-icon>
         <span [translate]="'add'"> </span>
     </button>

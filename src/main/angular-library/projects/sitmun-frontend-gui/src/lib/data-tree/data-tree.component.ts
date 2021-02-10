@@ -78,28 +78,41 @@ export class FileDatabase {
    */
   buildFileTree(arrayTreeNodes: any[], level: number): any {
     var map = {};
-    arrayTreeNodes.forEach((treeNode) => {
-      var obj = treeNode;
-      obj.children = [];
-      obj.type= (treeNode.isFolder)? "folder" : "node";
+    if(arrayTreeNodes.length===0)
+    {
+      let root = {
+        isFolder:true,
+        name:'Root',
+        type: 'folder',
+        children: []
+      }
+      map['root']=root;
+    }
+    else{
+      arrayTreeNodes.forEach((treeNode) => {
+        var obj = treeNode;
+        obj.children = [];
+        obj.type= (treeNode.isFolder)? "folder" : "node";
+  
+        if(!map[obj.id]) {map[obj.id] = obj;}
+        else{
+          let previousChildren= map[obj.id].children
+          map[obj.id] = obj;
+          map[obj.id].children=previousChildren
+        }
+        var parent = obj.parent || 'root';
+        if (!map[parent]) {
+          map[parent] = {
+            children: []
+          };
+        }
+        map[parent].children.push(obj);
+      });
+      map['root'].type='folder';
+      map['root'].name='Root';
+      map['root'].isFolder=true;
+    }
 
-      if(!map[obj.id]) {map[obj.id] = obj;}
-      else{
-        let previousChildren= map[obj.id].children
-        map[obj.id] = obj;
-        map[obj.id].children=previousChildren
-      }
-      var parent = obj.parent || 'root';
-      if (!map[parent]) {
-        map[parent] = {
-          children: []
-        };
-      }
-      map[parent].children.push(obj);
-    });
-    map['root'].type='folder';
-    map['root'].name='Root';
-    map['root'].isFolder=true;
 
     return map['root'];
   }

@@ -22,21 +22,21 @@ import { DialogMessageComponent } from '../dialog-message/dialog-message.compone
 })
 export class DataGridComponent implements OnInit {
 
-  private _eventRefreshSubscription: any;
-  private _eventGetSelectedRowsSubscription: any;
-  private _eventGetAllRowsSubscription: any;
-  private _eventSaveAgGridStateSubscription: any;
+  _eventRefreshSubscription: any;
+  _eventGetSelectedRowsSubscription: any;
+  _eventGetAllRowsSubscription: any;
+  _eventSaveAgGridStateSubscription: any;
   modules: Module[] = AllCommunityModules;
 
 
   UndeRedoActions
   searchValue: string;
-  private gridApi;
-  private gridColumnApi;
+  gridApi:any;
+  gridColumnApi:any;
   statusColumn = false;
   changesMap: Map<number, Map<string, number>> = new Map<number, Map<string, number>>();
   // We will save the id of edited cells and the number of editions done.
-  private params; // Last parameters of the grid (in case we do apply changes we will need it) 
+  params:any; // Last parameters of the grid (in case we do apply changes we will need it) 
   rowData: any[];
   changeCounter: number; // Number of editions done above any cell 
   previousChangeCounter: number; // Number of ditions done after the last modification(changeCounter)
@@ -221,6 +221,15 @@ export class DataGridComponent implements OnInit {
         {colId: this.defaultColumnSorting, sort: 'asc'}
     ];
     this.gridApi.setSortModel(sortModel);
+    }
+  }
+
+
+  areRowsSelected(): Boolean{
+    if(this.gridApi!=null && this.gridApi.getSelectedNodes().length > 0){
+      return true
+    }else{
+      return false
     }
   }
 

@@ -22,7 +22,7 @@
     <label *ngIf="globalSearch" [translate]="'search'"> </label>
     <input *ngIf="globalSearch" type="text" class="searchGenericInput" placeholder="" (keyup)="quickSearch()"
         [(ngModel)]="searchValue" ml-2>
-    <button type="button" *ngIf="deleteButton && areRowsSelected()" mat-flat-button id="deleteButton" class="deleteButton" (click)="removeData()" >
+    <button type="button" *ngIf="deleteButton" mat-flat-button id="deleteButton" class="deleteButton" (click)="removeData()" [disabled]="!areRowsSelected()">
         <mat-icon fontSet="material-icons-round"> delete </mat-icon>
         <span [translate]="'remove'"> </span>
 

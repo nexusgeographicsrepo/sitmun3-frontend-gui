@@ -271,9 +271,11 @@ export class DataTreeComponent {
   @Input() eventNodeUpdatedSubscription: Observable <any> ;
   @Input() eventCreateNodeSubscription: Observable <any> ;
   @Input() eventGetAllRowsSubscription: Observable <any> ;
+  @Input() eventRefreshSubscription: Observable <any> ;
   private _eventNodeUpdatedSubscription: any;
   private _eventCreateNodeSubscription: any;
   private _eventGetAllRowsSubscription: any;
+  private _eventRefreshSubscription: any;
   treeControl: FlatTreeControl<FileFlatNode>;
   treeFlattener: MatTreeFlattener<FileNode, FileFlatNode>;
   dataSource: MatTreeFlatDataSource<FileNode, FileFlatNode>;
@@ -340,7 +342,17 @@ export class DataTreeComponent {
         this.emitAllRows();
       });
     }
+
+    if (this.eventRefreshSubscription) {
+      this._eventRefreshSubscription = this.eventRefreshSubscription.subscribe(() => {
+        this.getElements();
+      });
+    }
     
+    this.getElements();
+  }
+
+  getElements(): void {
     this.getAll()
     .subscribe((items) => {
       this.treeData = items;

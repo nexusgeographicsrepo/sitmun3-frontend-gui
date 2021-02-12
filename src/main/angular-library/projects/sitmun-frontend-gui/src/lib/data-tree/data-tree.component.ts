@@ -31,6 +31,7 @@ export class FileNode {
   radio: any
   tooltip: any
   _links: any
+  status: any
 }
 
 /** Flat node with expandable and level information */
@@ -40,7 +41,8 @@ export class FileFlatNode {
     public name: string,
     public level: number,
     public type: any,
-    public id: string
+    public id: string,
+    public status: string
   ) { }
 }
 
@@ -368,7 +370,7 @@ export class DataTreeComponent {
     const existingNode = this.nestedNodeMap.get(node);
     const flatNode = existingNode && existingNode.name === node.name
       ? existingNode
-      : new FileFlatNode((node.children && node.children.length > 0),node.name,level,node.type,node.id);
+      : new FileFlatNode((node.children && node.children.length > 0),node.name,level,node.type,node.id,node.status);
 
     this.flatNodeMap.set(flatNode, node);
     this.nestedNodeMap.set(node, flatNode);
@@ -490,12 +492,13 @@ export class DataTreeComponent {
 
   rebuildTreeForData(data: any[]) {
     //this.dataSource.data = data;
-    this.expansionModel.selected.forEach((id) => {
-      const node = this.treeControl.dataNodes.find((n) => n.id === id);
-      this.treeControl.expand(node);
-    });
+
     this.dataSource.data = [];
     this.dataSource.data = data;
+    this.treeControl.expansionModel.selected.forEach((nodeAct) => {
+      const node = this.treeControl.dataNodes.find((n) => n.id === nodeAct.id);
+      this.treeControl.expand(node);
+    });
   }
 
   private getParentNode(node: FileFlatNode): FileFlatNode | null {
@@ -570,6 +573,7 @@ export class DataTreeComponent {
       this.deleteChildren(nodeClicked.children);
       // nodeClicked.children=children
       nodeClicked.status='Deleted'
+      
       this.rebuildTreeForData(changedData);
     }
 

@@ -41,7 +41,7 @@
 			folder
 		</mat-icon>
 		{{node.name}}
-		<button *ngIf="node.type ==='folder'" (click)="onButtonClicked(node.id, 'newFolder')" mat-icon-button>
+		<button *ngIf="node.type ==='folder' && node.status!='delete'" (click)="onButtonClicked(node.id, 'newFolder')" mat-icon-button>
 			<mat-icon>create_new_folder</mat-icon>
 		</button>
 		<button *ngIf="node.type ==='folder'" (click)="onButtonClicked(node.id, 'newNode')" mat-icon-button>

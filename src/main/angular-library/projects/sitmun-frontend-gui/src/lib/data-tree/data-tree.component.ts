@@ -475,11 +475,11 @@ export class DataTreeComponent {
    */
 
   rebuildTreeForData(data: any[]) {
-    /*this.dataSource.data = data;
+    //this.dataSource.data = data;
     this.expansionModel.selected.forEach((id) => {
       const node = this.treeControl.dataNodes.find((n) => n.id === id);
       this.treeControl.expand(node);
-    });*/
+    });
     this.dataSource.data = [];
     this.dataSource.data = data;
   }

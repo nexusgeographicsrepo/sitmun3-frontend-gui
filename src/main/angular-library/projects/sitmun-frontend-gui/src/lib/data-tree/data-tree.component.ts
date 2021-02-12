@@ -84,6 +84,7 @@ export class FileDatabase {
         isFolder:true,
         name:'Root',
         type: 'folder',
+        isRoot: true,
         children: []
       }
       map['root']=root;
@@ -111,6 +112,7 @@ export class FileDatabase {
       map['root'].type='folder';
       map['root'].name='Root';
       map['root'].isFolder=true;
+      map['root'].isRoot=true;
     }
 
 
@@ -271,9 +273,11 @@ export class DataTreeComponent {
   @Input() eventNodeUpdatedSubscription: Observable <any> ;
   @Input() eventCreateNodeSubscription: Observable <any> ;
   @Input() eventGetAllRowsSubscription: Observable <any> ;
+  @Input() eventRefreshSubscription: Observable <any> ;
   private _eventNodeUpdatedSubscription: any;
   private _eventCreateNodeSubscription: any;
   private _eventGetAllRowsSubscription: any;
+  private _eventRefreshSubscription: any;
   treeControl: FlatTreeControl<FileFlatNode>;
   treeFlattener: MatTreeFlattener<FileNode, FileFlatNode>;
   dataSource: MatTreeFlatDataSource<FileNode, FileFlatNode>;
@@ -340,7 +344,17 @@ export class DataTreeComponent {
         this.emitAllRows();
       });
     }
+
+    if (this.eventRefreshSubscription) {
+      this._eventRefreshSubscription = this.eventRefreshSubscription.subscribe(() => {
+        this.getElements();
+      });
+    }
     
+    this.getElements();
+  }
+
+  getElements(): void {
     this.getAll()
     .subscribe((items) => {
       this.treeData = items;
@@ -513,7 +527,7 @@ export class DataTreeComponent {
   {
     newFolder.type="folder";
     const dataToChange = JSON.parse(JSON.stringify(this.dataSource.data))
-    if(newFolder.parent === null) {dataToChange.push(newFolder)}
+    if(newFolder.parent === null) {dataToChange[0].children.push(newFolder)}
     else{
       const siblings = this.findNodeSiblings(dataToChange, newFolder.parent);
       let index= siblings.findIndex(node => node.id === newFolder.parent);
@@ -527,10 +541,12 @@ export class DataTreeComponent {
   {
     newNode.type="node";
     const dataToChange = JSON.parse(JSON.stringify(this.dataSource.data))
+    if(newNode.parent === null) {dataToChange[0].children.push(newNode)}
+    else{
     const siblings = this.findNodeSiblings(dataToChange, newNode.parent);
     let index= siblings.findIndex(node => node.id === newNode.parent);
     siblings[index].children.push(newNode)
-    
+    }
 
     this.rebuildTreeForData(dataToChange);
 
@@ -547,11 +563,12 @@ export class DataTreeComponent {
     else if(button === 'newFolder') {this.createFolder.emit(nodeClicked)}
     else if(button === 'newNode') {this.createNode.emit( nodeClicked)}
     else if(button === 'delete') {
-      let children= this.getAllChildren(nodeClicked.children)
-      children.forEach(children => {
-        children.status='Deleted';
-      });
-      nodeClicked.children=children
+      // let children= this.getAllChildren(nodeClicked.children)
+      // children.forEach(children => {
+      //   children.status='Deleted';
+      // });
+      this.deleteChildren(nodeClicked.children);
+      // nodeClicked.children=children
       nodeClicked.status='Deleted'
       this.rebuildTreeForData(changedData);
     }
@@ -578,6 +595,17 @@ export class DataTreeComponent {
 
     });
     return result;
+  }
+
+  deleteChildren(arr)
+  {
+    arr.forEach((item, i) => {
+      if (item.children.length>0) {
+        this.deleteChildren(item.children);
+      }
+      item.status='Deleted'
+
+    });
   }
 
 }

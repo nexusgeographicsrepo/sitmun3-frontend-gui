@@ -317,7 +317,7 @@ export class DataGridComponent implements OnInit {
 
       if (item.id == undefined || (this.rowData.find(element => element.id === item.id)) == undefined) {
         if (this.statusColumn) {
-          item.status = 'Pending creation'
+          item.status = 'pendingCreation'
         }
         itemsToAdd.push(item);
         this.rowData.push(item);
@@ -345,7 +345,7 @@ export class DataGridComponent implements OnInit {
       const selectedRows = selectedNodes.map(node => node.id);
 
       for (const id of selectedRows) {
-        this.gridApi.getRowNode(id).data.status = 'Deleted';
+        this.gridApi.getRowNode(id).data.status = 'pendingDelete';
       }
       this.gridOptions.api.refreshCells();
     }
@@ -467,8 +467,8 @@ export class DataGridComponent implements OnInit {
           addMap.set(params.colDef.field, 1)
           this.changesMap.set(params.node.id, addMap);
           if (this.statusColumn) {
-            if (this.gridApi.getRowNode(params.node.id).data.status !== 'Pending creation') {
-              this.gridApi.getRowNode(params.node.id).data.status = 'Modified'
+            if (this.gridApi.getRowNode(params.node.id).data.status !== 'pendingCreation') {
+              this.gridApi.getRowNode(params.node.id).data.status = 'pendingModify'
             }
           }
         }
@@ -501,7 +501,7 @@ export class DataGridComponent implements OnInit {
           this.changesMap.delete(params.node.id);
           const row = this.gridApi.getDisplayedRowAtIndex(params.rowIndex);
           if (this.statusColumn) {
-            if (this.gridApi.getRowNode(params.node.id).data.status !== 'Pending creation') {
+            if (this.gridApi.getRowNode(params.node.id).data.status !== 'pendingCreation') {
               this.gridApi.getRowNode(params.node.id).data.status = ''
             }
           };

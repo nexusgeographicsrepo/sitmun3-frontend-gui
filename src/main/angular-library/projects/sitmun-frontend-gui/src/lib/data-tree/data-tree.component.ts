@@ -568,11 +568,11 @@ export class DataTreeComponent {
     else if(button === 'delete') {
       // let children= this.getAllChildren(nodeClicked.children)
       // children.forEach(children => {
-      //   children.status='Deleted';
+      //   children.status='pendingDelete';
       // });
       this.deleteChildren(nodeClicked.children);
       // nodeClicked.children=children
-      nodeClicked.status='Deleted'
+      nodeClicked.status='pendingDelete'
       
       this.rebuildTreeForData(changedData);
     }
@@ -607,7 +607,7 @@ export class DataTreeComponent {
       if (item.children.length>0) {
         this.deleteChildren(item.children);
       }
-      item.status='Deleted'
+      item.status='pendingDelete'
 
     });
   }

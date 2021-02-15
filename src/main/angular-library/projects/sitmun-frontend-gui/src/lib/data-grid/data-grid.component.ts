@@ -438,6 +438,15 @@ export class DataGridComponent implements OnInit {
     //this.previousChangeCounter = 0;
     this.redoCounter = 0;
 
+    if(this.statusColumn)
+    {
+      this.gridApi.forEachNode(function(node) { 
+        if(node.data.status==='pendingModify') {node.data.status=''}
+        console.log(node)
+    });
+    this.gridApi.refreshCells();
+    }
+
 
     //this.params.colDef.cellStyle =  {backgroundColor: '#FFFFFF'};
     //this.gridApi.redrawRows();

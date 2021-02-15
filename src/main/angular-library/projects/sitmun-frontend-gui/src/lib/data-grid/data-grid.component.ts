@@ -303,10 +303,32 @@ export class DataGridComponent implements OnInit {
       .subscribe((items) => {
         this.rowData = items;
         this.gridApi.setRowData(this.rowData);
-        this.gridApi.sizeColumnsToFit()
+        this.setSize()
+        // this.gridApi.sizeColumnsToFit()
         console.log(this.rowData);
 
       });
+  }
+
+  setSize() {
+
+    var allColumnIds = [];
+    let columns = this.gridOptions.columnApi.getAllColumns();
+    columns.forEach(function (column) {
+      allColumnIds.push(column.colId);
+    });
+  
+    this.gridOptions.columnApi.autoSizeColumns(allColumnIds);
+
+    let grid = this.gridOptions.api
+    let availableWidth = grid.gridPanel.eBodyViewport.clientWidth;
+
+    let usedWidth = grid.gridPanel.columnController.getWidthOfColsInList(columns);
+    
+     if (usedWidth < availableWidth) {
+         grid.sizeColumnsToFit();
+     }
+
   }
 
   addItems(newItems: any[]): void {

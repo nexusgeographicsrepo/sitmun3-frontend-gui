@@ -44,6 +44,7 @@ export class DataGridComponent implements OnInit {
   modificationChange = false;
   undoNoChanges = false; // Boolean that indicates if an undo hasn't modifications
   gridOptions;
+  someStatusHasChangedToDelete = false;
 
 
   @Input() eventRefreshSubscription: Observable<boolean>;
@@ -153,6 +154,7 @@ export class DataGridComponent implements OnInit {
     if (this.eventRefreshSubscription) {
       this._eventRefreshSubscription = this.eventRefreshSubscription.subscribe(() => {
         this.changesMap.clear();
+        this.someStatusHasChangedToDelete=false;
         this.changeCounter = 0;
         this.previousChangeCounter = 0;
         this.redoCounter = 0;
@@ -378,7 +380,7 @@ export class DataGridComponent implements OnInit {
 
     if (this.statusColumn) {
       const selectedRows = selectedNodes.map(node => node.id);
-
+      if(selectedRows.length>0) {this.someStatusHasChangedToDelete=true;}
       for (const id of selectedRows) {
         this.gridApi.getRowNode(id).data.status = 'pendingDelete';
       }
@@ -434,6 +436,7 @@ export class DataGridComponent implements OnInit {
     this.changeCounter = 0;
     this.previousChangeCounter = 0;
     this.redoCounter = 0;
+    this.someStatusHasChangedToDelete=false;
     this.params.colDef.cellStyle = { backgroundColor: '#FFFFFF' };
     this.gridApi.redrawRows();
   }
@@ -451,6 +454,15 @@ export class DataGridComponent implements OnInit {
     //this.previousChangeCounter = 0;
     this.redoCounter = 0;
 
+    if(this.statusColumn)
+    {
+      this.gridApi.forEachNode(function(node) { 
+        if(node.data.status === 'pendingModify' || node.data.status === 'pendingDelete') {node.data.status=''}
+        console.log(node)
+    });
+    this.gridApi.refreshCells();
+    this.someStatusHasChangedToDelete=false;
+    }
 
     //this.params.colDef.cellStyle =  {backgroundColor: '#FFFFFF'};
     //this.gridApi.redrawRows();

@@ -1,8 +1,7 @@
 <div id=grup1 class="editDivBtns">
     <span *ngIf="title" [translate]="title"> </span>
-    <button type="button" title="{{ 'cancel' | translate }}" mat-mini-fab class="mini-fab mat-red"
-        *ngIf="discardChangesButton" id="deleteChangesButton" type="button" (click)="deleteChanges()"
-        [disabled]="changeCounter <= 0">
+    <button type="button" title="{{ 'cancel' | translate }}" mat-mini-fab class="mini-fab mat-red" *ngIf="discardChangesButton"
+        id="deleteChangesButton" type="button" (click)="deleteChanges()" [disabled]="changeCounter <= 0 && !someStatusHasChangedToDelete">
         <mat-icon fontSet="material-icons-round"> close </mat-icon>
     </button>
     <button type="button" title="{{ 'undo' | translate }}" mat-mini-fab class="mini-fab mat-orange" *ngIf="undoButton"

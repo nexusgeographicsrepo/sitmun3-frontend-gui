@@ -22,8 +22,8 @@
     <label *ngIf="globalSearch" [translate]="'search'"> </label>
     <input *ngIf="globalSearch" type="text" class="searchGenericInput" placeholder="" (keyup)="quickSearch()"
         [(ngModel)]="searchValue" ml-2>
-    <label *ngIf="!globalSearch" [translate]="'rowsToShow'"> </label>
-    <mat-button-toggle-group *ngIf="!globalSearch" class="toogleButton" name="fontStyle" aria-label="Font Style"  value="5">
+    <label *ngIf="changeHeightButton" [translate]="'rowsToShow'"> </label>
+    <mat-button-toggle-group *ngIf="changeHeightButton" class="toogleButton" name="fontStyle" aria-label="Font Style"  value="5">
         <mat-button-toggle value="5" (change)="changeHeight($event.value)">5</mat-button-toggle>
         <mat-button-toggle value="20" (change)="changeHeight($event.value)">20</mat-button-toggle>
         <mat-button-toggle value="50" (change)="changeHeight($event.value)">50</mat-button-toggle>

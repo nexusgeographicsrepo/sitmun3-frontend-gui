@@ -66,6 +66,7 @@ export class DataGridComponent implements OnInit {
   @Input() actionButton: boolean;
   @Input() addButton: boolean;
   @Input() globalSearch: boolean;
+  @Input() changeHeightButton: boolean;
   @Input() themeGrid: any;
   @Input() singleSelection: boolean;
   @Input() nonEditable: boolean;

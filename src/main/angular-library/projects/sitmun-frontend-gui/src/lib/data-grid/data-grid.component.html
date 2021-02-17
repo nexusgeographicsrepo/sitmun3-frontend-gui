@@ -46,7 +46,7 @@
         <button type="button" mat-menu-item *ngIf="!hideDuplicateButton" (click)="onDuplicateButtonClicked()">
             {{"duplicate" |
             translate}}</button>
-        <button type="button" mat-menu-item *ngIf="!hideSearchReplaceButton"> {{"search/replace" | translate}}</button>
+        <button type="button" mat-menu-item *ngIf="!hideSearchReplaceButton && false"> {{"search/replace" | translate}}</button>
     </mat-menu>
 
     <button type="button" *ngIf="newButton" mat-flat-button class="newButton" (click)="newData()">

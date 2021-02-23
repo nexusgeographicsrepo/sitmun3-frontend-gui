@@ -493,9 +493,19 @@ export class DataTreeComponent {
    * after being rebuilt
    */
 
+   sortByOrder(data: any[]){
+    data.forEach((item) => {
+      if (item.children.length>0) {
+        this.sortByOrder(item.children);
+        item.children.sort((a,b) => a.order.toString().localeCompare( b.order.toString()));
+      }
+
+    });
+   }
+
   rebuildTreeForData(data: any[]) {
     //this.dataSource.data = data;
-
+    this.sortByOrder(data);
     this.dataSource.data = [];
     this.dataSource.data = data;
     this.treeControl.expansionModel.selected.forEach((nodeAct) => {
@@ -533,10 +543,14 @@ export class DataTreeComponent {
   {
     newFolder.type="folder";
     const dataToChange = JSON.parse(JSON.stringify(this.dataSource.data))
-    if(newFolder.parent === null) {dataToChange[0].children.push(newFolder)}
+    if(newFolder.parent === null) {
+      newFolder.order=dataToChange[0].children.length;
+      dataToChange[0].children.push(newFolder)
+    }
     else{
       const siblings = this.findNodeSiblings(dataToChange, newFolder.parent);
       let index= siblings.findIndex(node => node.id === newFolder.parent);
+      newFolder.order=siblings[index].children.length;
       siblings[index].children.push(newFolder)
     }
     this.rebuildTreeForData(dataToChange);
@@ -547,10 +561,14 @@ export class DataTreeComponent {
   {
     newNode.type="node";
     const dataToChange = JSON.parse(JSON.stringify(this.dataSource.data))
-    if(newNode.parent === null) {dataToChange[0].children.push(newNode)}
+    if(newNode.parent === null) {
+      newNode.order=dataToChange[0].children.length;
+      dataToChange[0].children.push(newNode)
+    }
     else{
     const siblings = this.findNodeSiblings(dataToChange, newNode.parent);
     let index= siblings.findIndex(node => node.id === newNode.parent);
+    newNode.order=siblings[index].children.length;
     siblings[index].children.push(newNode)
     }
 

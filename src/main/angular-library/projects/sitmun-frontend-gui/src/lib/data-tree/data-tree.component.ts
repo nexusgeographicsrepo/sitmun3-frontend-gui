@@ -122,9 +122,9 @@ export class FileDatabase {
   }
   
 
-  deleteItem(node: FileNode) {
-    this.deleteNode(this.data.children, node);
-    this.dataChange.next(this.data);
+  deleteItem(node: FileNode, changedData:any) {
+    this.deleteNode(changedData.children, node);
+    this.dataChange.next(changedData);
   }
 
   deleteNode(nodes: FileNode[], nodeToDelete: FileNode) {
@@ -140,20 +140,20 @@ export class FileDatabase {
     }
   }
 
-  copyPasteItem(from: FileNode, to: FileNode): FileNode {
-    const newItem = this.insertItem(to, from);
+  copyPasteItem(from: FileNode, to: FileNode, changedData:any): FileNode {
+    const newItem = this.insertItem(to, from,changedData);
 
     return newItem;
   }
 
-  copyPasteItemAbove(from: FileNode, to: FileNode): FileNode {
-    const newItem = this.insertItemAbove(to, from);
+  copyPasteItemAbove(from: FileNode, to: FileNode,changedData:any): FileNode {
+    const newItem = this.insertItemAbove(to, from,changedData);
 
     return newItem;
   }
 
-  copyPasteItemBelow(from: FileNode, to: FileNode): FileNode {
-    const newItem = this.insertItemBelow(to, from);
+  copyPasteItemBelow(from: FileNode, to: FileNode,changedData:any): FileNode {
+    const newItem = this.insertItemBelow(to, from,changedData);
 
     return newItem;
   }
@@ -185,7 +185,7 @@ export class FileDatabase {
     return newItem;
   }
 
-  insertItem(parent: FileNode, node: FileNode): FileNode {
+  insertItem(parent: FileNode, node: FileNode,changedData:any): FileNode {
     if (!parent.children) {
       parent.children = [];
     }
@@ -193,26 +193,26 @@ export class FileDatabase {
     newItem.parent = parent==null || parent.id==undefined?null:parent.id;
 
     parent.children.push(newItem);
-    this.dataChange.next(this.data);
+    this.dataChange.next(changedData);
     return newItem;
   }
 
-  insertItemAbove(node: FileNode, nodeDrag: FileNode): FileNode {
-    const parentNode = this.getParentFromNodes(node);
+  insertItemAbove(node: FileNode, nodeDrag: FileNode,changedData:any): FileNode {
+    const parentNode = this.getParentFromNodes(node,changedData);
     const newItem = this.getNewItem(nodeDrag)
     newItem.parent = parentNode==null || parentNode.id==undefined?null:parentNode.id;
 
     if (parentNode != null) {
       parentNode.children.splice(parentNode.children.indexOf(node), 0, newItem);
     } else {
-      this.data.children.splice(this.data.children.indexOf(node), 0, newItem);
+      changedData.children.splice(changedData.children.indexOf(node), 0, newItem);
     }
-    this.dataChange.next(this.data);
+    this.dataChange.next(changedData);
     return newItem;
   }
 
-  insertItemBelow(node: FileNode, nodeDrag: FileNode): FileNode {
-    const parentNode = this.getParentFromNodes(node);
+  insertItemBelow(node: FileNode, nodeDrag: FileNode,changedData:any): FileNode {
+    const parentNode = this.getParentFromNodes(node,changedData);
    
     const newItem = this.getNewItem(nodeDrag)
     newItem.parent = parentNode==null || parentNode.id==undefined?null:parentNode.id;
@@ -220,16 +220,16 @@ export class FileDatabase {
     if (parentNode != null) {
       parentNode.children.splice(parentNode.children.indexOf(node) + 1, 0, newItem);
     } else {
-      this.data.children.splice(this.data.children.indexOf(node) + 1, 0, newItem);
+      changedData.children.splice(changedData.children.indexOf(node) + 1, 0, newItem);
     }
-    this.dataChange.next(this.data);
+    this.dataChange.next(changedData);
     return newItem;
   }
 
   
-  getParentFromNodes(node: FileNode): FileNode {
-    for (let i = 0; i < this.data.children.length; ++i) {
-      const currentRoot = this.data.children[i];
+  getParentFromNodes(node: FileNode,changedData:any): FileNode {
+    for (let i = 0; i < changedData.children.length; ++i) {
+      const currentRoot =  changedData.children[i];
       const parent = this.getParent(currentRoot, node);
       if (parent != null) {
         return parent;
@@ -454,23 +454,26 @@ export class DataTreeComponent {
 
   handleDrop(event, node) {
     event.preventDefault();
-    let toFlatNode=this.flatNodeMap.get(node);
-    let fromFlatNode=this.flatNodeMap.get(this.dragNode)
-    if (node !== this.dragNode && (this.dragNodeExpandOverArea !== 'center' || (this.dragNodeExpandOverArea === 'center' && toFlatNode.isFolder))) {
+    const changedData = JSON.parse(JSON.stringify(this.dataSource.data))
+    const siblings = this.findNodeSiblings(changedData, node.id);
+
+    let toFlatNode= siblings.find(nodeAct => nodeAct.id === node.id);
+    let fromFlatNode= siblings.find(nodeAct => nodeAct.id === this.dragNode.id);
+    if (this.dragNode.status!="pendingDelete" && node !== this.dragNode && (this.dragNodeExpandOverArea !== 'center' || (this.dragNodeExpandOverArea === 'center' && toFlatNode.isFolder))) {
       let newItem: FileNode;
 
       if (this.dragNodeExpandOverArea === 'above') {
-        newItem = this.database.copyPasteItemAbove(fromFlatNode,toFlatNode);
+        newItem = this.database.copyPasteItemAbove(fromFlatNode,toFlatNode,changedData[0]);
       } else if (this.dragNodeExpandOverArea === 'below') {
-        newItem = this.database.copyPasteItemBelow(fromFlatNode,toFlatNode);
+        newItem = this.database.copyPasteItemBelow(fromFlatNode,toFlatNode,changedData[0]);
       } else {
-        newItem = this.database.copyPasteItem(fromFlatNode, toFlatNode);
+        newItem = this.database.copyPasteItem(fromFlatNode, toFlatNode,changedData[0]);
       }
       let parentLvl=this.treeControl.dataNodes.find((n) => n.id === fromFlatNode.id).level;
       fromFlatNode.children.forEach(child=>{
         this.treeControl.dataNodes.find((n) => n.id === child.id).level=parentLvl+1
       });
-      this.database.deleteItem(this.flatNodeMap.get(this.dragNode));
+      this.database.deleteItem(fromFlatNode,changedData[0]);
       this.treeControl.expandDescendants(this.nestedNodeMap.get(newItem));
     }
    

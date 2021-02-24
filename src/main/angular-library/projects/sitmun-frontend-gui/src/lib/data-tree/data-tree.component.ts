@@ -87,6 +87,7 @@ export class FileDatabase {
         name:'Root',
         type: 'folder',
         isRoot: true,
+        order: 0,
         children: []
       }
       map['root']=root;
@@ -113,6 +114,7 @@ export class FileDatabase {
       });
       map['root'].type='folder';
       map['root'].name='Root';
+      map['root'].order=0;
       map['root'].isFolder=true;
       map['root'].isRoot=true;
     }
@@ -494,10 +496,10 @@ export class DataTreeComponent {
    */
 
    sortByOrder(data: any[]){
+    data.sort((a,b) => a.order.toString().localeCompare( b.order.toString()));
     data.forEach((item) => {
       if (item.children.length>0) {
         this.sortByOrder(item.children);
-        item.children.sort((a,b) => a.order.toString().localeCompare( b.order.toString()));
       }
 
     });

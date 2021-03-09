@@ -67,6 +67,7 @@ export class DataGridComponent implements OnInit {
   @Input() addButton: boolean;
   @Input() globalSearch: boolean;
   @Input() changeHeightButton: boolean;
+  @Input() defaultHeight: any;
   @Input() themeGrid: any;
   @Input() singleSelection: boolean;
   @Input() nonEditable: boolean;
@@ -225,6 +226,9 @@ export class DataGridComponent implements OnInit {
         { colId: this.defaultColumnSorting, sort: 'asc' }
       ];
       this.gridApi.setSortModel(sortModel);
+    }
+    if(this.defaultHeight != null && this.defaultHeight != undefined){
+      this.changeHeight(this.defaultHeight)
     }
   }
 

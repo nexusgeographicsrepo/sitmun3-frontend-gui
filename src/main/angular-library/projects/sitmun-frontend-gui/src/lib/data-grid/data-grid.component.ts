@@ -11,6 +11,7 @@ import { BtnCheckboxRenderedComponent } from '../btn-checkbox-rendered/btn-check
 import { BtnCheckboxFilterComponent } from '../btn-checkbox-filter/btn-checkbox-filter.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogMessageComponent } from '../dialog-message/dialog-message.component';
+import { forEach } from 'jszip';
 
 
 
@@ -118,26 +119,6 @@ export class DataGridComponent implements OnInit {
         suppressMenu: true,
         resizable: true
       },
-      columnTypes: {
-        dateColumn: {
-          filter: 'agDateColumnFilter',
-          filterParams: {
-            comparator(filterLocalDateAtMidnight, cellValue) {
-              const dateCellValue = new Date(cellValue);
-              const dateFilter = new Date(filterLocalDateAtMidnight);
-
-              if (dateCellValue.getTime() < dateFilter.getTime()) {
-                return -1;
-              } else if (dateCellValue.getTime() > dateFilter.getTime()) {
-                return 1;
-              } else {
-                return 0;
-              }
-            },
-          },
-          suppressMenu: true
-        }
-      },
       rowSelection: 'multiple',
       singleClickEdit: true,
       // suppressHorizontalScroll: true,
@@ -145,6 +126,7 @@ export class DataGridComponent implements OnInit {
         const data = this.translate.instant(key);
         return data === key ? defaultValue : data;
       }
+
     }
 
 
@@ -212,8 +194,6 @@ export class DataGridComponent implements OnInit {
     this.params = params;
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-    this.getElements();
-    console.log(this.columnDefs);
     for (const col of this.columnDefs) {
       if (col.field === 'status') {
         console.log("status column true");
@@ -221,6 +201,8 @@ export class DataGridComponent implements OnInit {
         this.statusColumn = true;
       }
     }
+    this.getElements();
+    console.log(this.columnDefs);
     if (this.defaultColumnSorting) {
       const sortModel = [
         { colId: this.defaultColumnSorting, sort: 'asc' }
@@ -309,6 +291,11 @@ export class DataGridComponent implements OnInit {
   getElements(): void {
     this.getAll()
       .subscribe((items) => {
+        if(this.statusColumn){
+          items.forEach(element => {
+            element.status='statusOK'
+          });
+        }
         this.rowData = items;
         this.gridApi.setRowData(this.rowData);
         this.setSize()
@@ -462,7 +449,7 @@ export class DataGridComponent implements OnInit {
     if(this.statusColumn)
     {
       this.gridApi.forEachNode(function(node) { 
-        if(node.data.status === 'pendingModify' || node.data.status === 'pendingDelete') {node.data.status=''}
+        if(node.data.status === 'pendingModify' || node.data.status === 'pendingDelete') {node.data.status='statusOK'}
         console.log(node)
     });
     this.gridApi.refreshCells();
@@ -475,7 +462,9 @@ export class DataGridComponent implements OnInit {
 
 
   onFilterModified(): void {
+
     this.deleteChanges();
+
   }
 
 
@@ -554,7 +543,7 @@ export class DataGridComponent implements OnInit {
           const row = this.gridApi.getDisplayedRowAtIndex(params.rowIndex);
           if (this.statusColumn) {
             if (this.gridApi.getRowNode(params.node.id).data.status !== 'pendingCreation') {
-              this.gridApi.getRowNode(params.node.id).data.status = ''
+              this.gridApi.getRowNode(params.node.id).data.status ='statusOK'
             }
           };
           // We paint it white

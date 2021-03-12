@@ -22,6 +22,21 @@ export class DialogTranslationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if(this.catalanValue != null){
+      this.translationForm.patchValue({
+        catalanValue: this.catalanValue
+      })
+    }
+    if(this.spanishValue != null){
+      this.translationForm.patchValue({
+        spanishValue: this.spanishValue
+      })
+    }
+    if(this.englishValue != null){
+      this.translationForm.patchValue({
+        englishValue: this.englishValue
+      })
+    }
   }
 
   initializeTranslationForm(): void {

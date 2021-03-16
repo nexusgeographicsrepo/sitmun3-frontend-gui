@@ -20,6 +20,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatMenuModule} from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { DatagraphComponent } from './data-graph/datagraph/datagraph.component';
 
 
 
@@ -43,6 +44,7 @@ const appRoutes: Routes = [
     declarations: [
         AppComponent,
         HomeComponent,
+        DatagraphComponent,
     ],
     imports: [
         BrowserModule,

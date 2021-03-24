@@ -10,12 +10,10 @@ import { MatDialogRef } from '@angular/material/dialog';
 export class DialogTranslationComponent implements OnInit {
 
   translationForm: FormGroup;
-  column: string;
-  elementId: string;
-  languageId: string;
   catalanValue: string;
   spanishValue: string;
   englishValue: string;
+  araneseValue: string;
 
   constructor(private dialogRef: MatDialogRef<DialogTranslationComponent>) { 
     this.initializeTranslationForm();
@@ -37,6 +35,11 @@ export class DialogTranslationComponent implements OnInit {
         englishValue: this.englishValue
       })
     }
+    if(this.araneseValue != null){
+      this.translationForm.patchValue({
+        araneseValue: this.araneseValue
+      })
+    }
   }
 
   initializeTranslationForm(): void {
@@ -45,6 +48,7 @@ export class DialogTranslationComponent implements OnInit {
       catalanValue: new FormControl(null, []),
       spanishValue: new FormControl(null, []),
       englishValue: new FormControl(null, []),
+      araneseValue: new FormControl(null, []),
     })
   }
 
@@ -53,12 +57,9 @@ export class DialogTranslationComponent implements OnInit {
       catalanValue: this.translationForm.value.catalanValue,
       spanishValue: this.translationForm.value.spanishValue,
       englishValue: this.translationForm.value.englishValue,
+      araneseValue: this.translationForm.value.araneseValue,
     }
     this.dialogRef.close({event:'Accept', data: data});
-  }
-
-  doDelete(){
-    this.dialogRef.close({event:'Delete'});
   }
 
   closeDialog(){

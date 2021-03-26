@@ -115,9 +115,22 @@ export class DataGridComponent implements OnInit {
         flex: 1,
         filter: true,
         editable: !this.nonEditable,
-        cellStyle: { backgroundColor: '#FFFFFF' },
         suppressMenu: true,
-        resizable: true
+        resizable: true,
+        cellStyle: (params) => {
+          if(params.value && params.colDef.editable){
+            console.log(params);
+            if(this.changesMap.has(params.node.id) && this.changesMap.get(params.node.id).has(params.colDef.field)){
+              return {'background-color': '#E8F1DE'};
+            }
+            else{
+              return {'background-color': 'white'};
+            }
+          }
+          else {
+            return {'background-color': 'white'};
+          }
+        } ,
       },
       rowSelection: 'multiple',
       singleClickEdit: true,
@@ -452,9 +465,9 @@ export class DataGridComponent implements OnInit {
         if(node.data.status === 'pendingModify' || node.data.status === 'pendingDelete') {node.data.status='statusOK'}
         console.log(node)
     });
-    this.gridApi.refreshCells();
     this.someStatusHasChangedToDelete=false;
-    }
+  }
+  this.gridApi.redrawRows();
 
     //this.params.colDef.cellStyle =  {backgroundColor: '#FFFFFF'};
     //this.gridApi.redrawRows();
@@ -620,20 +633,20 @@ export class DataGridComponent implements OnInit {
   paintCells(params: any, changesMap: Map<number, Map<string, number>>,) {
     const row = this.gridApi.getDisplayedRowAtIndex(params.rowIndex);
 
-    this.changeCellStyleColumns(params, changesMap, '#E8F1DE');
+    // this.changeCellStyleColumns(params, changesMap, '#E8F1DE');
     this.gridApi.redrawRows({ rowNodes: [row] });
-    this.changeCellStyleColumns(params, changesMap, '#FFFFFF');
+    // this.changeCellStyleColumns(params, changesMap, '#FFFFFF');
     // We will define cellStyle white to future modifications (like filter)
   }
 
-  changeCellStyleColumns(params: any, changesMap: Map<number, Map<string, number>>, color: string) {
+  // changeCellStyleColumns(params: any, changesMap: Map<number, Map<string, number>>, color: string) {
 
-    for (const key of changesMap.get(params.node.id).keys()) {
-      const columnNumber = this.getColumnIndexByColId(this.gridColumnApi, key);
-      this.gridColumnApi.columnController.gridColumns[columnNumber].colDef.cellStyle = { backgroundColor: color };
-    }
+  //   for (const key of changesMap.get(params.node.id).keys()) {
+  //     const columnNumber = this.getColumnIndexByColId(this.gridColumnApi, key);
+  //     this.gridColumnApi.columnController.gridColumns[columnNumber].colDef.cellStyle = { backgroundColor: color };
+  //   }
 
 
-  }
+  // }
 
 }

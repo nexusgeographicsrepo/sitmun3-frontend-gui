@@ -127,10 +127,18 @@
       "prefix": "sitmun-frontend-gui",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@linnenschmidt/build-ng-packagr:build",
           "options": {
             "tsConfig": "src/main/angular-library/projects/sitmun-frontend-gui/tsconfig.lib.json",
-            "project": "src/main/angular-library/projects/sitmun-frontend-gui/ng-package.json"
+            "project": "src/main/angular-library/projects/sitmun-frontend-gui/ng-package.json",
+            "assets": [
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "src/main/angular-library/projects/sitmun-frontend-gui/assets",
+                "output": "src/assets"
+              }
+            ]
           },
           "configurations": {
             "production": {

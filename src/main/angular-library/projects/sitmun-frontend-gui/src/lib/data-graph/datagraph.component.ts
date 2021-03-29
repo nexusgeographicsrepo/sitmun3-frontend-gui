@@ -52,8 +52,8 @@ export class DatagraphComponent implements OnInit {
     this.width = element.offsetWidth - this.margin.left - this.margin.right;
     this.height = element.offsetHeight - this.margin.top - this.margin.bottom;
     let svg = d3.select(element).append('svg')
-      .attr('width', element.offsetWidth)
-      .attr('height', element.offsetHeight);
+      .attr('width', '100%')
+      .attr("height", '100%')
 
     // chart plot area
     this.chart = svg.append('g')
@@ -76,7 +76,8 @@ export class DatagraphComponent implements OnInit {
     this.xAxis = svg.append('g')
       .attr('class', 'axis axis-x')
       .attr('transform', `translate(${this.margin.left}, ${this.margin.top + this.height})`)
-      .call(d3.axisBottom(this.xScale));
+      .call(d3.axisBottom(this.xScale))
+      
     this.yAxis = svg.append('g')
       .attr('class', 'axis axis-y')
       .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`)

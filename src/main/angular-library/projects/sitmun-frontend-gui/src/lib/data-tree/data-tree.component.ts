@@ -88,7 +88,8 @@ export class FileDatabase {
         type: 'folder',
         isRoot: true,
         order: 0,
-        children: []
+        children: [],
+        id:0
       }
       map['root']=root;
     }
@@ -457,10 +458,10 @@ export class DataTreeComponent {
   handleDrop(event, node) {
     event.preventDefault();
     const changedData = JSON.parse(JSON.stringify(this.dataSource.data))
-    const siblings = this.findNodeSiblings(changedData, node.id);
 
-    let toFlatNode= siblings.find(nodeAct => nodeAct.id === node.id);
-    let fromFlatNode= siblings.find(nodeAct => nodeAct.id === this.dragNode.id);
+
+    let toFlatNode= this.findNodeSiblings(changedData[0].children, node.id).find(nodeAct => nodeAct.id === node.id);
+    let fromFlatNode= this.findNodeSiblings(changedData[0].children, this.dragNode.id).find(nodeAct => nodeAct.id === this.dragNode.id);
     if (this.dragNode.status!="pendingDelete" && node !== this.dragNode && (this.dragNodeExpandOverArea !== 'center' || (this.dragNodeExpandOverArea === 'center' && toFlatNode.isFolder))) {
       let newItem: FileNode;
 

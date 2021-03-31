@@ -119,7 +119,6 @@ export class DataGridComponent implements OnInit {
         resizable: true,
         cellStyle: (params) => {
           if(params.value && params.colDef.editable){
-            console.log(params);
             if(this.changesMap.has(params.node.id) && this.changesMap.get(params.node.id).has(params.colDef.field)){
               return {'background-color': '#E8F1DE'};
             }
@@ -209,7 +208,6 @@ export class DataGridComponent implements OnInit {
     this.gridColumnApi = params.columnApi;
     for (const col of this.columnDefs) {
       if (col.field === 'status') {
-        console.log("status column true");
 
         this.statusColumn = true;
       }
@@ -406,7 +404,6 @@ export class DataGridComponent implements OnInit {
 
   onDuplicateButtonClicked(): void {
     this.gridApi.stopEditing(false);
-    console.log(this.changeCounter);
     if (this.changeCounter > 0) {
       const dialogRef = this.dialog.open(DialogMessageComponent);
       dialogRef.componentInstance.title = this.translate.instant('caution')
@@ -507,7 +504,6 @@ export class DataGridComponent implements OnInit {
 
 
   onCellValueChanged(params): void {
-    console.log("value Change")
     this.params = params;
     if (this.changeCounter > this.previousChangeCounter)
     // True if we have edited some cell or we have done a redo 

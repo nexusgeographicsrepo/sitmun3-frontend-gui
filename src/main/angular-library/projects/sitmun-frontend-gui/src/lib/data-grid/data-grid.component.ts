@@ -81,6 +81,7 @@ export class DataGridComponent implements OnInit {
   @Output() remove: EventEmitter<any[]>;
   @Output() new: EventEmitter<number>;
   @Output() add: EventEmitter<number>;
+  @Output() discardChanges: EventEmitter<any[]>;
   @Output() sendChanges: EventEmitter<any[]>;
   @Output() duplicate: EventEmitter<any[]>;
   @Output() getSelectedRows: EventEmitter<any[]>;
@@ -102,6 +103,7 @@ export class DataGridComponent implements OnInit {
     this.remove = new EventEmitter();
     this.new = new EventEmitter();
     this.add = new EventEmitter();
+    this.discardChanges= new EventEmitter();
     this.sendChanges = new EventEmitter();
     this.getSelectedRows = new EventEmitter();
     this.duplicate = new EventEmitter();
@@ -346,6 +348,7 @@ export class DataGridComponent implements OnInit {
       if (item.id == undefined || (this.rowData.find(element => element.id === item.id)) == undefined) {
         if (this.statusColumn) {
           item.status = 'pendingCreation'
+          item.newItem = true;
         }
         itemsToAdd.push(item);
         this.rowData.push(item);
@@ -458,11 +461,24 @@ export class DataGridComponent implements OnInit {
 
     if(this.statusColumn)
     {
+      let rowsWithStatusModified = [];
       this.gridApi.forEachNode(function(node) { 
-        if(node.data.status === 'pendingModify' || node.data.status === 'pendingDelete') {node.data.status='statusOK'}
+        if(node.data.status === 'pendingModify' || node.data.status === 'pendingDelete') {
+          if(node.data.status === 'pendingDelete'){
+            rowsWithStatusModified.push(node.data);
+          }
+          if(node.data.newItem){
+            node.data.status='pendingCreation'
+          }
+          else{
+            node.data.status='statusOK'
+          }
+        }
+        
         console.log(node)
     });
     this.someStatusHasChangedToDelete=false;
+    this.discardChanges.emit(rowsWithStatusModified);
   }
   this.gridApi.redrawRows();
 

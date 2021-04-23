@@ -143,6 +143,14 @@ export class FileDatabase {
     }
   }
 
+  setOrder(data: any[]){
+    for(let i=0; i< data.length; i++){
+      data[i].order=i;
+      if(! data[i].status) { data[i].status="Modified"; } 
+    }
+    return data;
+   }
+
   copyPasteItem(from: FileNode, to: FileNode, changedData:any): FileNode {
     const newItem = this.insertItem(to, from,changedData);
 
@@ -196,6 +204,7 @@ export class FileDatabase {
     newItem.parent = parent==null || parent.id==undefined?null:parent.id;
 
     parent.children.push(newItem);
+    this.setOrder(parent.children)
     this.dataChange.next(changedData);
     return newItem;
   }
@@ -204,11 +213,13 @@ export class FileDatabase {
     const parentNode = this.getParentFromNodes(node,changedData);
     const newItem = this.getNewItem(nodeDrag)
     newItem.parent = parentNode==null || parentNode.id==undefined?null:parentNode.id;
-
+  
     if (parentNode != null) {
       parentNode.children.splice(parentNode.children.indexOf(node), 0, newItem);
+      this.setOrder(parentNode.children)
     } else {
       changedData.children.splice(changedData.children.indexOf(node), 0, newItem);
+      this.setOrder(changedData.children)
     }
     this.dataChange.next(changedData);
     return newItem;
@@ -222,8 +233,10 @@ export class FileDatabase {
 
     if (parentNode != null) {
       parentNode.children.splice(parentNode.children.indexOf(node) + 1, 0, newItem);
+      this.setOrder(parentNode.children)
     } else {
       changedData.children.splice(changedData.children.indexOf(node) + 1, 0, newItem);
+      this.setOrder(changedData.children)
     }
     this.dataChange.next(changedData);
     return newItem;
@@ -459,9 +472,17 @@ export class DataTreeComponent {
     event.preventDefault();
     const changedData = JSON.parse(JSON.stringify(this.dataSource.data))
 
-
-    let toFlatNode= this.findNodeSiblings(changedData[0].children, node.id).find(nodeAct => nodeAct.id === node.id);
-    let fromFlatNode= this.findNodeSiblings(changedData[0].children, this.dragNode.id).find(nodeAct => nodeAct.id === this.dragNode.id);
+    
+    let toFlatNode;
+    if(node.id === undefined) { toFlatNode=changedData[0] }
+    else{
+      toFlatNode= this.findNodeSiblings(changedData[0].children, node.id).find(nodeAct => nodeAct.id === node.id);
+    }
+    let fromFlatNode;
+    if( this.dragNode.id === undefined) { fromFlatNode=changedData[0] }
+    else{
+      fromFlatNode = this.findNodeSiblings(changedData[0].children, this.dragNode.id).find(nodeAct => nodeAct.id === this.dragNode.id);
+    }
     if (this.dragNode.status!="pendingDelete" && node !== this.dragNode && (this.dragNodeExpandOverArea !== 'center' || (this.dragNodeExpandOverArea === 'center' && toFlatNode.isFolder))) {
       let newItem: FileNode;
 
@@ -471,7 +492,7 @@ export class DataTreeComponent {
         newItem = this.database.copyPasteItemBelow(fromFlatNode,toFlatNode,changedData[0]);
       } else {
         newItem = this.database.copyPasteItem(fromFlatNode, toFlatNode,changedData[0]);
-      }
+      }    
       let parentLvl=this.treeControl.dataNodes.find((n) => n.id === fromFlatNode.id).level;
       fromFlatNode.children.forEach(child=>{
         this.treeControl.dataNodes.find((n) => n.id === child.id).level=parentLvl+1
@@ -504,6 +525,14 @@ export class DataTreeComponent {
       }
 
     });
+   }
+
+   setOrder(data: any[]){
+    for(let i=0; i< data.length; i++){
+      data[i].order=i;
+      if(! data[i].status) { data[i].status="Modified"; } 
+    }
+    return data;
    }
 
   rebuildTreeForData(data: any[]) {

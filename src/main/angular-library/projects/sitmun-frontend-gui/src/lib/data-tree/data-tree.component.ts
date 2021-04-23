@@ -518,7 +518,8 @@ export class DataTreeComponent {
    */
 
    sortByOrder(data: any[]){
-    data.sort((a,b) => a.order.toString().localeCompare( b.order.toString()));
+    // data.sort((a,b) => a.order.toString().localeCompare( b.order.toString()));
+    data.sort((a,b) => (a.order > b.order) ? 1 : ((b.order > a.order) ? -1 : 0));
     data.forEach((item) => {
       if (item.children.length>0) {
         this.sortByOrder(item.children);

@@ -57,6 +57,7 @@ export class DataGridComponent implements OnInit {
   @Input() columnDefs: any[];
   @Input() getAll: () => Observable<any>;
   @Input() discardChangesButton: boolean;
+  @Input() discardNonReverseStatus: boolean;
   @Input() id: any;
   @Input() undoButton: boolean;
   @Input() defaultColumnSorting: string;
@@ -459,7 +460,7 @@ export class DataGridComponent implements OnInit {
     //this.previousChangeCounter = 0;
     this.redoCounter = 0;
 
-    if(this.statusColumn)
+    if(this.statusColumn && !this.discardNonReverseStatus)
     {
       let rowsWithStatusModified = [];
       this.gridApi.forEachNode(function(node) { 

@@ -41,9 +41,9 @@
         <mat-icon fontSet="material-icons-round"> keyboard_arrow_down </mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-        <button type="button" mat-menu-item *ngIf="!hideExportButton" (click)="exportData()"> {{"export" | translate}}
+        <button type="button" mat-menu-item *ngIf="!hideExportButton" [disabled]="!areRowsSelected()" (click)="exportData()"> {{"export" | translate}}
         </button>
-        <button type="button" mat-menu-item *ngIf="!hideDuplicateButton" (click)="onDuplicateButtonClicked()">
+        <button type="button" mat-menu-item *ngIf="!hideDuplicateButton" [disabled]="!areRowsSelected()" (click)="onDuplicateButtonClicked()">
             {{"duplicate" |
             translate}}</button>
         <button type="button" mat-menu-item *ngIf="!hideSearchReplaceButton && false"> {{"search/replace" | translate}}</button>

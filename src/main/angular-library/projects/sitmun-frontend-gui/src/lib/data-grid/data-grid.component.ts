@@ -230,11 +230,12 @@ export class DataGridComponent implements OnInit {
 
 
   areRowsSelected(): Boolean {
-    if (this.gridApi != null && this.gridApi.getSelectedNodes().length > 0) {
-      return true
-    } else {
-      return false
-    }
+    return (this.gridApi != null && this.gridApi.getSelectedNodes().length > 0)? true: false;
+    // if (this.gridApi != null && this.gridApi.getSelectedNodes().length > 0) {
+    //   return true
+    // } else {
+    //   return false
+    // }
   }
 
 

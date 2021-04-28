@@ -35,6 +35,7 @@ export class DataGridComponent implements OnInit {
   gridApi: any;
   gridColumnApi: any;
   statusColumn = false;
+  someColumnIsEditable = false;
   changesMap: Map<number, Map<string, number>> = new Map<number, Map<string, number>>();
   // We will save the id of edited cells and the number of editions done.
   params: any; // Last parameters of the grid (in case we do apply changes we will need it) 
@@ -77,6 +78,7 @@ export class DataGridComponent implements OnInit {
   @Input() hideExportButton: boolean;
   @Input() hideDuplicateButton: boolean;
   @Input() hideSearchReplaceButton: boolean;
+  @Input() addFieldRestriction: any;
 
 
   @Output() remove: EventEmitter<any[]>;
@@ -210,8 +212,8 @@ export class DataGridComponent implements OnInit {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
     for (const col of this.columnDefs) {
+      if(!this.someColumnIsEditable && col.editable) { this.someColumnIsEditable = true}
       if (col.field === 'status') {
-
         this.statusColumn = true;
       }
     }
@@ -344,10 +346,11 @@ export class DataGridComponent implements OnInit {
   addItems(newItems: any[]): void {
     console.log(newItems);
     let itemsToAdd: Array<any> = [];
+    let condition = (this.addFieldRestriction)? this.addFieldRestriction: 'id';
 
     newItems.forEach(item => {
 
-      if (item.id == undefined || (this.rowData.find(element => element.id === item.id)) == undefined) {
+      if (item[condition] == undefined || (this.rowData.find(element => element[condition] == item[condition])) == undefined) {
         if (this.statusColumn) {
           item.status = 'pendingCreation'
           item.newItem = true;
@@ -356,7 +359,7 @@ export class DataGridComponent implements OnInit {
         this.rowData.push(item);
       }
       else {
-        console.log(`Item with the ID ${item.id} already exists`)
+        console.log(`Item with the ${condition} ${item[condition]} already exists`)
       }
     });
     this.gridApi.updateRowData({ add: itemsToAdd });

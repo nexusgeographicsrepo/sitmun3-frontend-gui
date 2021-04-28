@@ -4,11 +4,11 @@
         id="deleteChangesButton" type="button" (click)="deleteChanges()" [disabled]="changeCounter <= 0 && (!someStatusHasChangedToDelete || discardNonReverseStatus  )">
         <mat-icon fontSet="material-icons-round"> close </mat-icon>
     </button>
-    <button type="button" title="{{ 'undo' | translate }}" mat-mini-fab class="mini-fab mat-orange" *ngIf="undoButton"
+    <button type="button" title="{{ 'undo' | translate }}" mat-mini-fab class="mini-fab mat-orange" *ngIf="undoButton && someColumnIsEditable"
         id="undo" (click)="undo()" [disabled]="changeCounter <= 0">
         <mat-icon fontSet="material-icons-round"> undo </mat-icon>
     </button>
-    <button type="button" title="{{ 'redo' | translate }}" mat-mini-fab class="mini-fab mat-orange" *ngIf="redoButton"
+    <button type="button" title="{{ 'redo' | translate }}" mat-mini-fab class="mini-fab mat-orange" *ngIf="redoButton && someColumnIsEditable"
         id="redo" (click)="redo()" [disabled]="redoCounter <= 0">
         <mat-icon fontSet="material-icons-round"> redo </mat-icon>
     </button>

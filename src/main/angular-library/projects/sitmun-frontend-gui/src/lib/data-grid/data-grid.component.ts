@@ -447,7 +447,7 @@ export class DataGridComponent implements OnInit {
     this.previousChangeCounter = 0;
     this.redoCounter = 0;
     this.someStatusHasChangedToDelete=false;
-    this.params.colDef.cellStyle = { backgroundColor: '#FFFFFF' };
+    // this.params.colDef.cellStyle = { backgroundColor: '#FFFFFF' };
     this.gridApi.redrawRows();
   }
 

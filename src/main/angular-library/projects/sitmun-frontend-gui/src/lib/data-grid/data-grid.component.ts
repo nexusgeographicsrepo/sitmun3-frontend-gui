@@ -90,6 +90,7 @@ export class DataGridComponent implements OnInit {
   @Output() getSelectedRows: EventEmitter<any[]>;
   @Output() getAllRows: EventEmitter<any[]>;
   @Output() getAgGridState: EventEmitter<any[]>;
+  @Output() gridModified: EventEmitter<boolean>;
 
 
   constructor(public dialog: MatDialog,
@@ -111,6 +112,7 @@ export class DataGridComponent implements OnInit {
     this.getSelectedRows = new EventEmitter();
     this.duplicate = new EventEmitter();
     this.getAllRows = new EventEmitter();
+    this.gridModified = new EventEmitter();
     this.changeCounter = 0;
     this.previousChangeCounter = 0;
     this.redoCounter = 0;
@@ -442,6 +444,7 @@ export class DataGridComponent implements OnInit {
       itemsChanged.push(this.gridApi.getRowNode(key).data);
     }
     this.sendChanges.emit(itemsChanged);
+    this.gridModified.emit(false);
     this.changesMap.clear();
     this.changeCounter = 0;
     this.previousChangeCounter = 0;
@@ -484,6 +487,7 @@ export class DataGridComponent implements OnInit {
     });
     this.someStatusHasChangedToDelete=false;
     this.discardChanges.emit(rowsWithStatusModified);
+    this.gridModified.emit(false);
   }
   this.gridApi.redrawRows();
 
@@ -503,6 +507,7 @@ export class DataGridComponent implements OnInit {
     this.gridApi.stopEditing(false);
     this.gridApi.undoCellEditing();
     this.changeCounter -= 1;
+    if(this.changeCounter == 0) { this.gridModified.emit(false)}
     this.redoCounter += 1;
   }
 
@@ -517,6 +522,7 @@ export class DataGridComponent implements OnInit {
   onCellEditingStopped(e) {
     if (this.modificationChange) {
       this.changeCounter++;
+      if(this.changeCounter == 1) { this.gridModified.emit(true)}
       this.redoCounter = 0;
       this.onCellValueChanged(e);
       this.modificationChange = false;

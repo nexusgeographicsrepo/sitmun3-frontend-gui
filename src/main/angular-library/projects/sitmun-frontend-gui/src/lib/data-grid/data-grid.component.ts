@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AllCommunityModules, ColumnApi, Module } from '@ag-grid-community/all-modules';
-
 import { TranslateService } from '@ngx-translate/core';
 import { BtnEditRenderedComponent } from '../btn-edit-rendered/btn-edit-rendered.component';
 import { BtnCheckboxRenderedComponent } from '../btn-checkbox-rendered/btn-checkbox-rendered.component';
@@ -12,7 +11,7 @@ import { BtnCheckboxFilterComponent } from '../btn-checkbox-filter/btn-checkbox-
 import { MatDialog } from '@angular/material/dialog';
 import { DialogMessageComponent } from '../dialog-message/dialog-message.component';
 import { forEach } from 'jszip';
-
+declare let $: any;
 
 
 
@@ -55,6 +54,7 @@ export class DataGridComponent implements OnInit {
   @Input() eventSaveAgGridStateSubscription: Observable<boolean>;
   @Input() eventAddItemsSubscription: Observable<boolean>;
   @Input() frameworkComponents: any;
+  @Input() components: any;
   @Input() columnDefs: any[];
   @Input() getAll: () => Observable<any>;
   @Input() discardChangesButton: boolean;
@@ -103,6 +103,11 @@ export class DataGridComponent implements OnInit {
       btnCheckboxRendererComponent: BtnCheckboxRenderedComponent,
       btnCheckboxFilterComponent: BtnCheckboxFilterComponent
     };
+
+    this.components = {
+      datePicker: this.getDatePicker()
+    };
+
 
     this.remove = new EventEmitter();
     this.new = new EventEmitter();
@@ -232,6 +237,32 @@ export class DataGridComponent implements OnInit {
     }
   }
 
+
+  getDatePicker() {
+    function Datepicker() {}
+    Datepicker.prototype.init = function (params) {
+      this.eInput = document.createElement('input');
+      this.eInput.value = params.value;
+      this.eInput.classList.add('ag-input');
+      this.eInput.style.height = '100%';
+      $(this.eInput).datepicker({ dateFormat: 'mm/dd/yy' });
+    };
+    Datepicker.prototype.getGui = function () {
+      return this.eInput;
+    };
+    Datepicker.prototype.afterGuiAttached = function () {
+      this.eInput.focus();
+      this.eInput.select();
+    };
+    Datepicker.prototype.getValue = function () {
+      return this.eInput.value;
+    };
+    Datepicker.prototype.destroy = function () {};
+    Datepicker.prototype.isPopup = function () {
+      return false;
+    };
+    return Datepicker;
+  }
 
   areRowsSelected(): Boolean {
     return (this.gridApi != null && this.gridApi.getSelectedNodes().length > 0)? true: false;

@@ -79,6 +79,7 @@ export class DataGridComponent implements OnInit {
   @Input() hideDuplicateButton: boolean;
   @Input() hideSearchReplaceButton: boolean;
   @Input() addFieldRestriction: any;
+  @Input() allNewElements: any;
 
 
   @Output() remove: EventEmitter<any[]>;
@@ -342,8 +343,10 @@ export class DataGridComponent implements OnInit {
     this.getAll()
       .subscribe((items) => {
         if(this.statusColumn){
+          let status = this.allNewElements?'pendingCreation':'statusOK'
           items.forEach(element => {
-            element.status='statusOK'
+            element.status=status
+            if(this.allNewElements) { element.new = true; }
           });
         }
         this.rowData = items;
@@ -489,6 +492,7 @@ export class DataGridComponent implements OnInit {
 
   deleteChanges(): void {
     this.gridApi.stopEditing(false);
+    let newElementsActived= this.allNewElements;
 
     while (this.changeCounter > 0) {
       this.undo();
@@ -506,7 +510,7 @@ export class DataGridComponent implements OnInit {
           if(node.data.status === 'pendingDelete'){
             rowsWithStatusModified.push(node.data);
           }
-          if(node.data.newItem){
+          if(node.data.newItem || newElementsActived){
             node.data.status='pendingCreation'
           }
           else{
@@ -575,9 +579,9 @@ export class DataGridComponent implements OnInit {
           addMap.set(params.colDef.field, 1)
           this.changesMap.set(params.node.id, addMap);
           if (this.statusColumn) {
-            if (this.gridApi.getRowNode(params.node.id).data.status !== 'pendingCreation') {
+            // if (this.gridApi.getRowNode(params.node.id).data.status !== 'pendingCreation') {
               this.gridApi.getRowNode(params.node.id).data.status = 'pendingModify'
-            }
+            // }
           }
         }
         else {

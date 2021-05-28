@@ -228,10 +228,21 @@ export class DataGridComponent implements OnInit {
     this.getElements();
     console.log(this.columnDefs);
     if (this.defaultColumnSorting) {
-      const sortModel = [
-        { colId: this.defaultColumnSorting, sort: 'asc' }
-      ];
-      this.gridApi.setSortModel(sortModel);
+      if(!Array.isArray(this.defaultColumnSorting))
+      {
+        const sortModel = [
+          { colId: this.defaultColumnSorting, sort: 'asc' }
+        ];
+        this.gridApi.setSortModel(sortModel);
+      }
+      else{
+        let sortModel = [];
+        this.defaultColumnSorting.forEach(element => {
+          sortModel.push({ colId: this.defaultColumnSorting, sort: 'asc' })
+        });
+        this.gridApi.setSortModel(sortModel);
+      }
+
     }
     if(this.defaultHeight != null && this.defaultHeight != undefined){
       this.changeHeight(this.defaultHeight)
@@ -345,7 +356,9 @@ export class DataGridComponent implements OnInit {
         if(this.statusColumn){
           let status = this.allNewElements?'pendingCreation':'statusOK'
           items.forEach(element => {
-            element.status=status
+            if(element.status != "notAvailable" && element.status != "pendingCreation" && element.status != "pendingRegistration"){
+              element.status=status
+            }
             if(this.allNewElements) { element.new = true; }
           });
         }

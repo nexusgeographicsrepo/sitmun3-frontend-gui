@@ -238,7 +238,7 @@ export class DataGridComponent implements OnInit {
       else{
         let sortModel = [];
         this.defaultColumnSorting.forEach(element => {
-          sortModel.push({ colId: this.defaultColumnSorting, sort: 'asc' })
+          sortModel.push({ colId: element, sort: 'asc' })
         });
         this.gridApi.setSortModel(sortModel);
       }

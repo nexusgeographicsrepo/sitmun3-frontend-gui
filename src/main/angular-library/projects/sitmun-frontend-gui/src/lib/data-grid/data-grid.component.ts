@@ -396,10 +396,11 @@ export class DataGridComponent implements OnInit {
     console.log(newItems);
     let itemsToAdd: Array<any> = [];
     let condition = (this.addFieldRestriction)? this.addFieldRestriction: 'id';
+    
 
     newItems.forEach(item => {
 
-      if (item[condition] == undefined || (this.rowData.find(element => element[condition] == item[condition])) == undefined) {
+      if (this.checkElementAllowedToAdd(condition,item)) {
         if (this.statusColumn) {
           item.status = 'pendingCreation'
           item.newItem = true;
@@ -408,13 +409,42 @@ export class DataGridComponent implements OnInit {
         this.rowData.push(item);
       }
       else {
-        console.log(`Item with the ${condition} ${item[condition]} already exists`)
+        console.log(`Item already exists`)
       }
     });
     this.gridApi.updateRowData({ add: itemsToAdd });
 
     console.log(this.columnDefs);
     // params.oldValue!=undefined
+  }
+
+  private checkElementAllowedToAdd(condition, item){
+
+    let finalAddition = true;
+
+    if(Array.isArray(condition)){
+
+      for(let element of this.rowData){
+        let canAdd = false;
+
+        for(let currentCondition of condition){
+          if(element[currentCondition] != item[currentCondition]){
+            canAdd = true;
+            break;
+          }
+        }
+        if(!canAdd) {
+           finalAddition = false;
+           break;
+          }
+      }
+      return finalAddition;
+
+    }
+    else{
+      return (item[condition] == undefined || (this.rowData.find(element => element[condition] == item[condition])) == undefined)
+    }
+
   }
 
 

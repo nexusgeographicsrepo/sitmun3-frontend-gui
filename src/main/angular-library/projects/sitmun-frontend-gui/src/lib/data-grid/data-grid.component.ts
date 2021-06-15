@@ -531,7 +531,6 @@ export class DataGridComponent implements OnInit {
           }
         }
         
-        console.log(node)
     });
     this.someStatusHasChangedToDelete=false;
     this.discardChanges.emit(rowsWithStatusModified);

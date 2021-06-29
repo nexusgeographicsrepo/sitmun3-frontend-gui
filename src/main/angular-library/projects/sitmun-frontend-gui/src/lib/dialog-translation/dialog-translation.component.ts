@@ -17,6 +17,7 @@ export class DialogTranslationComponent implements OnInit {
   spanishValue: string;
   englishValue: string;
   araneseValue: string;
+  frenchValue: string;
 
   constructor(private dialogRef: MatDialogRef<DialogTranslationComponent>,
     private matIconRegistry: MatIconRegistry,
@@ -24,19 +25,23 @@ export class DialogTranslationComponent implements OnInit {
     this.initializeTranslationForm();
     this.matIconRegistry.addSvgIcon(
       `icon_lang_ca`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl('../../assets/img/flag_ca.svg')
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/img/flag_ca.svg')
     );
     this.matIconRegistry.addSvgIcon(
       `icon_lang_es`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl('../../assets/img/flag_es.svg')
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/img/flag_es.svg')
     );
     this.matIconRegistry.addSvgIcon(
       `icon_lang_en`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl('../../assets/img/flag_en.svg')
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/img/flag_en.svg')
     );
     this.matIconRegistry.addSvgIcon(
       `icon_lang_oc`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl('../../assets/img/flag_oc.svg')
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/img/flag_oc.svg')
+    );
+    this.matIconRegistry.addSvgIcon(
+      `icon_lang_fr`,
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/img/flag_oc.svg')
     );
   }
 
@@ -61,6 +66,11 @@ export class DialogTranslationComponent implements OnInit {
         araneseValue: this.araneseValue
       })
     }
+    if(this.frenchValue != null){
+      this.translationForm.patchValue({
+        frenchValue: this.frenchValue
+      })
+    }
   }
 
   initializeTranslationForm(): void {
@@ -70,6 +80,7 @@ export class DialogTranslationComponent implements OnInit {
       spanishValue: new FormControl(null, []),
       englishValue: new FormControl(null, []),
       araneseValue: new FormControl(null, []),
+      frenchValue: new FormControl(null, []),
     })
   }
 
@@ -79,6 +90,7 @@ export class DialogTranslationComponent implements OnInit {
       spanishValue: this.translationForm.value.spanishValue,
       englishValue: this.translationForm.value.englishValue,
       araneseValue: this.translationForm.value.araneseValue,
+      frenchValue: this.translationForm.value.frenchValue,
     }
     this.dialogRef.close({event:'Accept', data: data});
   }

@@ -26,6 +26,7 @@ export class DataGridComponent implements OnInit {
   _eventGetSelectedRowsSubscription: any;
   _eventGetAllRowsSubscription: any;
   _eventSaveAgGridStateSubscription: any;
+  _eventModifyStatusOfSelectedCells: any;
   modules: Module[] = AllCommunityModules;
 
 
@@ -52,6 +53,7 @@ export class DataGridComponent implements OnInit {
   @Input() eventGetSelectedRowsSubscription: Observable<boolean>;
   @Input() eventGetAllRowsSubscription: Observable<boolean>;
   @Input() eventSaveAgGridStateSubscription: Observable<boolean>;
+  @Input() eventModifyStatusOfSelectedCells: Observable<string>;
   @Input() eventAddItemsSubscription: Observable<boolean>;
   @Input() frameworkComponents: any;
   @Input() components: any;
@@ -68,6 +70,8 @@ export class DataGridComponent implements OnInit {
   @Input() newButton: boolean;
   @Input() actionButton: boolean;
   @Input() addButton: boolean;
+  @Input() registerButton: boolean;
+  @Input() newStatusRegister: string;
   @Input() globalSearch: boolean;
   @Input() changeHeightButton: boolean;
   @Input() defaultHeight: any;
@@ -187,6 +191,12 @@ export class DataGridComponent implements OnInit {
       });
     }
 
+    if (this.eventModifyStatusOfSelectedCells) {
+      this._eventModifyStatusOfSelectedCells = this.eventModifyStatusOfSelectedCells.subscribe((status: string) => {
+        this.modifyStatusSelected(status);
+      });
+    }
+
     if (this.eventAddItemsSubscription) {
       this.eventAddItemsSubscription.subscribe(
         (items: any) => {
@@ -298,6 +308,16 @@ export class DataGridComponent implements OnInit {
     this.getAllRows.emit(rowData);
   }
 
+  modifyStatusSelected(status?: string): void{
+    let newStatus=status?status:this.newStatusRegister;
+    const selectedNodes = this.gridApi.getSelectedNodes();
+    selectedNodes.map(node => {
+      node.data.status=newStatus;
+      node.selected=false;
+    } );
+    this.gridApi.redrawRows();
+  }
+
   saveAgGridState(): void {
     let agGridState = {
       idAgGrid: this.id,
@@ -356,7 +376,7 @@ export class DataGridComponent implements OnInit {
         if(this.statusColumn){
           let status = this.allNewElements?'pendingCreation':'statusOK'
           items.forEach(element => {
-            if(element.status != "notAvailable" && element.status != "pendingCreation" && element.status != "pendingRegistration"){
+            if(element.status != "notAvailable" && element.status != "pendingCreation" && element.status != "pendingRegistration" && element.status != "unregisteredLayer"){
               element.status=status
             }
             if(this.allNewElements) { element.new = true; }

@@ -3,7 +3,7 @@
 <form [formGroup]='translationForm' #f="ngForm">
 
 
-        <div class="displayInline">
+        <div class="displayInline" *ngIf="catalanAvailable">
             <label class="formLabelDialog">
                 {{'Valor'}}
             </label>
@@ -13,7 +13,7 @@
             <mat-icon class="icon" svgIcon="icon_lang_ca"></mat-icon>
         </div>
 
-        <div class="displayInline">
+        <div class="displayInline"  *ngIf="spanishAvailable">
             <label class="formLabelDialog">
                 {{'Valor'}}
             </label>
@@ -24,7 +24,7 @@
             <mat-icon class="icon" svgIcon="icon_lang_es"></mat-icon>
         </div>
 
-        <div class="displayInline">
+        <div class="displayInline" *ngIf="englishAvailable" >
             <label class="formLabelDialog">
                 {{'Value'}}
             </label>
@@ -34,7 +34,7 @@
             <mat-icon class="icon" svgIcon="icon_lang_en"></mat-icon>
         </div>
 
-        <div class="displayInline">
+        <div class="displayInline" *ngIf="araneseAvailable" >
             <label class="formLabelDialog">
                 {{'Valor'}}
             </label>
@@ -44,7 +44,7 @@
             <mat-icon class="icon" svgIcon="icon_lang_oc"></mat-icon>
         </div>
         <div class="displayInline">
-            <label class="formLabelDialog">
+            <label class="formLabelDialog" *ngIf="frenchAvailable">
                 {{'Valeur'}}
             </label>
             <mat-form-field appearance="outline">

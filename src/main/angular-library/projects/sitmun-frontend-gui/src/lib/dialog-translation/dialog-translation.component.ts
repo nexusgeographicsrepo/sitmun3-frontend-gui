@@ -49,7 +49,7 @@ export class DialogTranslationComponent implements OnInit {
     );
     this.matIconRegistry.addSvgIcon(
       `icon_lang_fr`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/img/flag_oc.svg')
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/img/flag_fr.svg')
     );
   }
 

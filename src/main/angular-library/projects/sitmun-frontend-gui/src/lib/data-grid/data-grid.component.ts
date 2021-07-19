@@ -51,7 +51,7 @@ export class DataGridComponent implements OnInit {
 
   @Input() eventRefreshSubscription: Observable<boolean>;
   @Input() eventGetSelectedRowsSubscription: Observable<boolean>;
-  @Input() eventGetAllRowsSubscription: Observable<boolean>;
+  @Input() eventGetAllRowsSubscription: Observable<string>;
   @Input() eventSaveAgGridStateSubscription: Observable<boolean>;
   @Input() eventModifyStatusOfSelectedCells: Observable<string>;
   @Input() eventAddItemsSubscription: Observable<boolean>;
@@ -95,7 +95,7 @@ export class DataGridComponent implements OnInit {
   @Output() sendChanges: EventEmitter<any[]>;
   @Output() duplicate: EventEmitter<any[]>;
   @Output() getSelectedRows: EventEmitter<any[]>;
-  @Output() getAllRows: EventEmitter<any[]>;
+  @Output() getAllRows: EventEmitter<{data: any[], event:string}>;
   @Output() getAgGridState: EventEmitter<any[]>;
   @Output() gridModified: EventEmitter<boolean>;
 
@@ -182,8 +182,8 @@ export class DataGridComponent implements OnInit {
       });
     }
     if (this.eventGetAllRowsSubscription) {
-      this._eventGetAllRowsSubscription = this.eventGetAllRowsSubscription.subscribe(() => {
-        this.emitAllRows();
+      this._eventGetAllRowsSubscription = this.eventGetAllRowsSubscription.subscribe((event: string) => {
+        this.emitAllRows(event);
       });
     }
 
@@ -304,10 +304,10 @@ export class DataGridComponent implements OnInit {
     this.getSelectedRows.emit(selectedData);
   }
 
-  emitAllRows(): void {
+  emitAllRows(event: string): void {
     // let rowData = [];
     // this.gridApi.forEachNode(node => rowData.push(node.data));
-    this.getAllRows.emit(this.getAllCurrentData());
+    this.getAllRows.emit({data: this.getAllCurrentData(), event: event});
   }
 
   private getAllCurrentData(): Array<any>{

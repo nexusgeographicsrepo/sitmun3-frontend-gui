@@ -408,7 +408,7 @@ export class DataGridComponent implements OnInit {
         //     if(this.allNewElements) { element.new = true; }
         //   });
         // }
-        this.rowData = newItems.length>0?newItems: items;
+        this.rowData = this.currentData?newItems: items;
         this.gridApi.setRowData(this.rowData);
         this.setSize()
         // this.gridApi.sizeColumnsToFit()

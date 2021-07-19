@@ -84,11 +84,13 @@ export class DataGridComponent implements OnInit {
   @Input() hideSearchReplaceButton: boolean;
   @Input() addFieldRestriction: any;
   @Input() allNewElements: any;
+  @Input() currentData: Array<any>;
+  @Input() fieldRestrictionWithDifferentName: string;
 
 
   @Output() remove: EventEmitter<any[]>;
   @Output() new: EventEmitter<number>;
-  @Output() add: EventEmitter<number>;
+  @Output() add: EventEmitter<any[]>;
   @Output() discardChanges: EventEmitter<any[]>;
   @Output() sendChanges: EventEmitter<any[]>;
   @Output() duplicate: EventEmitter<any[]>;
@@ -303,9 +305,15 @@ export class DataGridComponent implements OnInit {
   }
 
   emitAllRows(): void {
+    // let rowData = [];
+    // this.gridApi.forEachNode(node => rowData.push(node.data));
+    this.getAllRows.emit(this.getAllCurrentData());
+  }
+
+  private getAllCurrentData(): Array<any>{
     let rowData = [];
     this.gridApi.forEachNode(node => rowData.push(node.data));
-    this.getAllRows.emit(rowData);
+    return rowData;
   }
 
   modifyStatusSelected(status?: string): void{
@@ -373,16 +381,34 @@ export class DataGridComponent implements OnInit {
   getElements(): void {
     this.getAll()
       .subscribe((items) => {
-        if(this.statusColumn){
-          let status = this.allNewElements?'pendingCreation':'statusOK'
-          items.forEach(element => {
+        let status = this.allNewElements?'pendingCreation':'statusOK'
+        let newItems = [];
+        let condition = (this.addFieldRestriction)? this.addFieldRestriction: 'id';
+        items.forEach(element => {
+          if(this.statusColumn){
             if(element.status != "notAvailable" && element.status != "pendingCreation" && element.status != "pendingRegistration" && element.status != "unregisteredLayer"){
               element.status=status
             }
             if(this.allNewElements) { element.new = true; }
-          });
-        }
-        this.rowData = items;
+          }
+          if(this.currentData){
+            if (this.checkElementAllowedToAdd(condition,element, this.currentData)) {
+                newItems.push(element);
+            }
+          }
+          
+        });
+
+        // if(this.statusColumn){
+        //   let status = this.allNewElements?'pendingCreation':'statusOK'
+        //   items.forEach(element => {
+        //     if(element.status != "notAvailable" && element.status != "pendingCreation" && element.status != "pendingRegistration" && element.status != "unregisteredLayer"){
+        //       element.status=status
+        //     }
+        //     if(this.allNewElements) { element.new = true; }
+        //   });
+        // }
+        this.rowData = newItems.length>0?newItems: items;
         this.gridApi.setRowData(this.rowData);
         this.setSize()
         // this.gridApi.sizeColumnsToFit()
@@ -420,7 +446,7 @@ export class DataGridComponent implements OnInit {
 
     newItems.forEach(item => {
 
-      if (this.checkElementAllowedToAdd(condition,item)) {
+      if (this.checkElementAllowedToAdd(condition,item, this.rowData)) {
         if (this.statusColumn) {
           item.status = 'pendingCreation'
           item.newItem = true;
@@ -438,13 +464,13 @@ export class DataGridComponent implements OnInit {
     // params.oldValue!=undefined
   }
 
-  private checkElementAllowedToAdd(condition, item){
+  private checkElementAllowedToAdd(condition, item, data){
 
     let finalAddition = true;
 
     if(Array.isArray(condition)){
 
-      for(let element of this.rowData){
+      for(let element of data){
         let canAdd = false;
 
         for(let currentCondition of condition){
@@ -462,7 +488,10 @@ export class DataGridComponent implements OnInit {
 
     }
     else{
-      return (item[condition] == undefined || (this.rowData.find(element => element[condition] == item[condition])) == undefined)
+      if(this.fieldRestrictionWithDifferentName){
+        return (item[condition] == undefined || (data.find(element => element[this.fieldRestrictionWithDifferentName] == item[condition])) == undefined)
+      }
+      return (item[condition] == undefined || (data.find(element => element[condition] == item[condition])) == undefined)
     }
 
   }
@@ -506,7 +535,7 @@ export class DataGridComponent implements OnInit {
 
   onAddButtonClicked(): void {
     this.gridApi.stopEditing(false);
-    this.add.emit(-1);
+    this.add.emit(this.getAllCurrentData());
   }
 
   onDuplicateButtonClicked(): void {

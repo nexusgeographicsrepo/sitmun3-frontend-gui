@@ -559,6 +559,8 @@ export class DataGridComponent implements OnInit {
       const selectedNodes = this.gridApi.getSelectedNodes();
       const selectedData = selectedNodes.map(node => node.data);
       this.duplicate.emit(selectedData);
+      this.gridOptions.api.deselectAll();
+
     }
   }
 

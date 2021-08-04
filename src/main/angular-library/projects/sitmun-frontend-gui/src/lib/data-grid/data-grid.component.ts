@@ -84,7 +84,7 @@ export class DataGridComponent implements OnInit {
   @Input() hideSearchReplaceButton: boolean;
   @Input() addFieldRestriction: any;
   @Input() allNewElements: any;
-  @Input() currentData: Array<any>;
+  @Input() currentData: Array<any> = null;
   @Input() fieldRestrictionWithDifferentName: string;
 
 

@@ -227,7 +227,6 @@ export class DataGridComponent implements OnInit {
 
   onGridReady(params): void {
     if (this.singleSelection) { this.gridOptions.rowSelection = 'single' }
-    // if (this.nonEditable) {this.gridOptions.defaultColDef.editable = false}
     this.params = params;
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
@@ -290,11 +289,6 @@ export class DataGridComponent implements OnInit {
 
   areRowsSelected(): Boolean {
     return (this.gridApi != null && this.gridApi.getSelectedNodes().length > 0)? true: false;
-    // if (this.gridApi != null && this.gridApi.getSelectedNodes().length > 0) {
-    //   return true
-    // } else {
-    //   return false
-    // }
   }
 
 
@@ -783,21 +777,7 @@ export class DataGridComponent implements OnInit {
   }
   paintCells(params: any, changesMap: Map<number, Map<string, number>>,) {
     const row = this.gridApi.getDisplayedRowAtIndex(params.rowIndex);
-
-    // this.changeCellStyleColumns(params, changesMap, '#E8F1DE');
     this.gridApi.redrawRows({ rowNodes: [row] });
-    // this.changeCellStyleColumns(params, changesMap, '#FFFFFF');
-    // We will define cellStyle white to future modifications (like filter)
   }
-
-  // changeCellStyleColumns(params: any, changesMap: Map<number, Map<string, number>>, color: string) {
-
-  //   for (const key of changesMap.get(params.node.id).keys()) {
-  //     const columnNumber = this.getColumnIndexByColId(this.gridColumnApi, key);
-  //     this.gridColumnApi.columnController.gridColumns[columnNumber].colDef.cellStyle = { backgroundColor: color };
-  //   }
-
-
-  // }
 
 }

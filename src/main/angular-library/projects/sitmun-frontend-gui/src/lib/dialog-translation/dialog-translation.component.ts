@@ -57,31 +57,6 @@ export class DialogTranslationComponent implements OnInit {
 
     this.checkLanguagesAvailables();
     this.checkTranslationsAlreadyDone();
-    // if(this.catalanValue != null){
-    //   this.translationForm.patchValue({
-    //     catalanValue: this.catalanValue
-    //   })
-    // }
-    // if(this.spanishValue != null){
-    //   this.translationForm.patchValue({
-    //     spanishValue: this.spanishValue
-    //   })
-    // }
-    // if(this.englishValue != null){
-    //   this.translationForm.patchValue({
-    //     englishValue: this.englishValue
-    //   })
-    // }
-    // if(this.araneseValue != null){
-    //   this.translationForm.patchValue({
-    //     araneseValue: this.araneseValue
-    //   })
-    // }
-    // if(this.frenchValue != null){
-    //   this.translationForm.patchValue({
-    //     frenchValue: this.frenchValue
-    //   })
-    // }
   }
 
   checkLanguagesAvailables(): void {

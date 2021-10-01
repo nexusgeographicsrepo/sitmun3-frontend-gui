@@ -24,9 +24,11 @@
         [(ngModel)]="searchValue" ml-2>
     <label *ngIf="changeHeightButton" [translate]="'rowsToShow'"> </label>
     <mat-button-toggle-group *ngIf="changeHeightButton" class="toogleButton" name="fontStyle" aria-label="Font Style"  value="5">
-        <mat-button-toggle value="5" (change)="changeHeight($event.value)">5</mat-button-toggle>
-        <mat-button-toggle value="20" (change)="changeHeight($event.value)">20</mat-button-toggle>
+        <mat-button-toggle value="10" (change)="changeHeight($event.value)">10</mat-button-toggle>
+        <mat-button-toggle value="25" (change)="changeHeight($event.value)">25</mat-button-toggle>
         <mat-button-toggle value="50" (change)="changeHeight($event.value)">50</mat-button-toggle>
+        <mat-button-toggle value="100" (change)="changeHeight($event.value)">100</mat-button-toggle>
+        <!-- <mat-button-toggle value="max" (change)="changeHeight($event.value)">{{'ALL' | translate}}</mat-button-toggle> -->
     </mat-button-toggle-group>
 
     <button type="button" *ngIf="deleteButton" mat-flat-button id="deleteButton" class="deleteButton"
@@ -68,7 +70,7 @@
     <div id="myGrid" style=" width:100%; height: 100%">
         <ag-grid-angular style="width: 100%; height: 100%;min-height: 200px;" [class]="themeGrid"
             [floatingFilter]="true" [rowData]="rowData" [columnDefs]="columnDefs" [gridOptions]="gridOptions"
-            [animateRows]="true" [pagination]="false" [modules]="modules" [undoRedoCellEditing]="true"
+            [animateRows]="true" [pagination]="false"  [domLayout]="domLayout" [modules]="modules" [undoRedoCellEditing]="true"
             [undoRedoCellEditingLimit]=200 [suppressRowClickSelection]=true [frameworkComponents]="frameworkComponents" [components]="components"
             rowSelection="multiple" multiSortKey="key" (filterModified)="onFilterModified()"
             (cellEditingStopped)="onCellEditingStopped($event)" (cellValueChanged)="onCellValueChanged($event)"

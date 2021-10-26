@@ -57,6 +57,7 @@ export class DataGridComponent implements OnInit {
   @Input() eventSaveAgGridStateSubscription: Observable<boolean>;
   @Input() eventModifyStatusOfSelectedCells: Observable<string>;
   @Input() eventAddItemsSubscription: Observable<boolean>;
+  @Input() eventReplaceAllItemsSubscription: Observable<boolean>;
   @Input() frameworkComponents: any;
   @Input() components: any;
   @Input() columnDefs: any[];
@@ -205,6 +206,14 @@ export class DataGridComponent implements OnInit {
       this.eventAddItemsSubscription.subscribe(
         (items: any) => {
           this.addItems(items);
+        }
+      )
+    }
+
+    if (this.eventReplaceAllItemsSubscription) {
+      this.eventReplaceAllItemsSubscription.subscribe(
+        (items: any) => {
+          this.replaceAllItems(items);
         }
       )
     }
@@ -431,6 +440,11 @@ export class DataGridComponent implements OnInit {
       grid.sizeColumnsToFit();
     }
 
+  }
+
+  replaceAllItems(newItems: any[]):void {
+    this.rowData = [];
+    this.addItems(newItems);
   }
 
   addItems(newItems: any[]): void {

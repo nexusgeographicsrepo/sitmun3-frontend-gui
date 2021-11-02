@@ -265,9 +265,7 @@ export class DataGridComponent implements OnInit {
       }
 
     }
-    if (this.defaultHeight != null && this.defaultHeight != undefined) {
       this.changeHeight(this.defaultHeight)
-    }
   }
 
 
@@ -525,7 +523,10 @@ export class DataGridComponent implements OnInit {
           pixels = "1450px"
         } else if (value === '100') {
           pixels = "2880px"
-        } 
+        }
+        else{
+          pixels = "350px"
+        }
         
         this.elRef.nativeElement.parentElement.style.height = pixels;
       

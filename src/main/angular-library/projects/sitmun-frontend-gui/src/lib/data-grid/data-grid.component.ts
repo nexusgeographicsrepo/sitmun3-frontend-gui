@@ -265,7 +265,9 @@ export class DataGridComponent implements OnInit {
       }
 
     }
+    if (this.defaultHeight != null && this.defaultHeight != undefined) {
       this.changeHeight(this.defaultHeight)
+    }
   }
 
 

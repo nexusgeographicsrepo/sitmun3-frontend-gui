@@ -265,9 +265,7 @@ export class DataGridComponent implements OnInit {
       }
 
     }
-    if (this.defaultHeight != null && this.defaultHeight != undefined) {
       this.changeHeight(this.defaultHeight)
-    }
   }
 
 
@@ -516,21 +514,26 @@ export class DataGridComponent implements OnInit {
       // }
       // else{
         // this.gridApi.setDomLayout(""); // Needed if we have set dom to autoHeight
-        let pixels = "";
-        if (value === '10') {
-          pixels = "350px"
-        } else if (value === '25') {
-          pixels = "800px"
-        } else if (value === '50') {
-          pixels = "1450px"
-        } else if (value === '100') {
-          pixels = "2880px"
+
+        if(value != 'default' ){
+          let pixels = "";
+          if (value === '10') {
+            pixels = "350px"
+          } else if (value === '25') {
+            pixels = "800px"
+          } else if (value === '50') {
+            pixels = "1450px"
+          } else if (value === '100') {
+            pixels = "2880px"
+          }
+          else{
+            pixels = "350px"
+          }
+          
+          this.elRef.nativeElement.parentElement.style.height = pixels;
         }
-        else{
-          pixels = "350px"
-        }
-        
-        this.elRef.nativeElement.parentElement.style.height = pixels;
+
+
       
   }
 

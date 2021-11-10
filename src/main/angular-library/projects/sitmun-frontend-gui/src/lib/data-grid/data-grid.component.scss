@@ -77,6 +77,21 @@ input {
   color: rgba(0, 0, 0, 0.26) solid 1px !important;
 }
 
+.loadButton {
+  color: #ff9300;
+  border: #ff9300 solid 1px !important;
+  min-width: 85px !important;
+  height: 40px;
+  justify-self: right !important;
+  float: inherit !important;
+}
+
+.loadButton:disabled {
+  background-color: inherit !important;
+  border: rgba(0, 0, 0, 0.26) solid 1px !important;
+  color: rgba(0, 0, 0, 0.26) solid 1px !important;
+}
+
 .returnButton,
 .actionButton {
   color: #ff9300;

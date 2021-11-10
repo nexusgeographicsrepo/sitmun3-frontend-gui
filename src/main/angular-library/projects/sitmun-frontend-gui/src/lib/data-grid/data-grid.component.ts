@@ -70,6 +70,8 @@ export class DataGridComponent implements OnInit {
   @Input() redoButton: boolean;
   @Input() applyChangesButton: boolean;
   @Input() deleteButton: boolean;
+  @Input() loadButton: boolean = false;
+  @Input() loadButtonDisabled: boolean;
   @Input() newButton: boolean;
   @Input() actionButton: boolean;
   @Input() addButton: boolean;
@@ -92,6 +94,7 @@ export class DataGridComponent implements OnInit {
 
 
   @Output() remove: EventEmitter<any[]>;
+  @Output() load: EventEmitter<any[]>;
   @Output() new: EventEmitter<number>;
   @Output() add: EventEmitter<any[]>;
   @Output() discardChanges: EventEmitter<any[]>;
@@ -120,6 +123,7 @@ export class DataGridComponent implements OnInit {
 
 
     this.remove = new EventEmitter();
+    this.load = new EventEmitter();
     this.new = new EventEmitter();
     this.add = new EventEmitter();
     this.discardChanges = new EventEmitter();
@@ -552,6 +556,10 @@ export class DataGridComponent implements OnInit {
       this.gridOptions.api.refreshCells();
     }
     this.gridOptions.api.deselectAll();
+  }
+
+  loadDataButton():void{
+    this.load.emit();
   }
 
   newData(): void {

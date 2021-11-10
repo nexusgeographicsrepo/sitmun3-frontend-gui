@@ -30,12 +30,14 @@
         <mat-button-toggle value="100" (change)="changeHeight($event.value)">100</mat-button-toggle>
         <!-- <mat-button-toggle value="max" (change)="changeHeight($event.value)">{{'ALL' | translate}}</mat-button-toggle> -->
     </mat-button-toggle-group>
-
+    <button type="button"  *ngIf="loadButton"  [disabled]="loadButtonDisabled"  mat-flat-button class="loadButton" (click)="loadDataButton()">
+        <mat-icon fontSet="material-icons-round"> file_download </mat-icon>
+        <span [translate]="'update_layers'"> </span>
+      </button>
     <button type="button" *ngIf="deleteButton" mat-flat-button id="deleteButton" class="deleteButton"
         (click)="removeData()" [disabled]="!areRowsSelected()">
         <mat-icon fontSet="material-icons-round"> delete </mat-icon>
         <span [translate]="'remove'"> </span>
-
     </button>
     <button type="button" *ngIf="actionButton" mat-flat-button [matMenuTriggerFor]="menu" id="actionButton"
         class="actionButton">

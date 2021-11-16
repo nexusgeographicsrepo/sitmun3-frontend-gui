@@ -47,6 +47,7 @@ export class DataGridComponent implements OnInit {
   undoNoChanges = false; // Boolean that indicates if an undo hasn't modifications
   gridOptions;
   someStatusHasChangedToDelete = false;
+  someStatusHasChangedToRegister = false;
 
   public domLayout;
 
@@ -177,6 +178,7 @@ export class DataGridComponent implements OnInit {
       this._eventRefreshSubscription = this.eventRefreshSubscription.subscribe(() => {
         this.changesMap.clear();
         this.someStatusHasChangedToDelete = false;
+        this.someStatusHasChangedToRegister = false;
         this.changeCounter = 0;
         this.previousChangeCounter = 0;
         this.redoCounter = 0;
@@ -325,6 +327,7 @@ export class DataGridComponent implements OnInit {
   modifyStatusSelected(status?: string): void {
     let newStatus = status ? status : this.newStatusRegister;
     const selectedNodes = this.gridApi.getSelectedNodes();
+    if (selectedNodes.length > 0) { this.someStatusHasChangedToRegister = true; }
     selectedNodes.map(node => {
       node.data.status = newStatus;
       node.selected = false;
@@ -612,6 +615,7 @@ export class DataGridComponent implements OnInit {
     this.previousChangeCounter = 0;
     this.redoCounter = 0;
     this.someStatusHasChangedToDelete = false;
+    this.someStatusHasChangedToRegister = false;
     // this.params.colDef.cellStyle = { backgroundColor: '#FFFFFF' };
     this.gridApi.redrawRows();
   }
@@ -640,13 +644,21 @@ export class DataGridComponent implements OnInit {
           if (node.data.newItem || newElementsActived) {
             node.data.status = 'pendingCreation'
           }
+          else if(node.data.newRegister){
+            node.data.status = 'unregisteredLayer'
+          }
           else {
             node.data.status = 'statusOK'
           }
         }
+        else if(node.data.status === 'pendingRegistration'){
+          node.data.status = 'unregisteredLayer';
+          rowsWithStatusModified.push(node.data);
+        }
 
       });
       this.someStatusHasChangedToDelete = false;
+      this.someStatusHasChangedToRegister = false;
       this.discardChanges.emit(rowsWithStatusModified);
       this.gridModified.emit(false);
     }
@@ -705,9 +717,10 @@ export class DataGridComponent implements OnInit {
           addMap.set(params.colDef.field, 1)
           this.changesMap.set(params.node.id, addMap);
           if (this.statusColumn) {
-            // if (this.gridApi.getRowNode(params.node.id).data.status !== 'pendingCreation') {
+            let node = this.gridApi.getRowNode(params.node.id).data
+            if (node.status !== 'pendingRegistration' && node.status!== 'unregisteredLayer') {
             this.gridApi.getRowNode(params.node.id).data.status = 'pendingModify'
-            // }
+            }
           }
         }
         else {
@@ -739,8 +752,9 @@ export class DataGridComponent implements OnInit {
           this.changesMap.delete(params.node.id);
           const row = this.gridApi.getDisplayedRowAtIndex(params.rowIndex);
           if (this.statusColumn) {
-            if (this.gridApi.getRowNode(params.node.id).data.status !== 'pendingCreation') {
-              this.gridApi.getRowNode(params.node.id).data.status = 'statusOK'
+            let node= this.gridApi.getRowNode(params.node.id).data
+            if ( node.status !== 'pendingCreation' && node.status !== 'pendingRegistration' && node.status !=='unregisteredLayer') {
+              this.gridApi.getRowNode(params.node.id).data.status = node.newItem?'pendingCreation':'statusOK';
             }
           };
           // We paint it white

@@ -28,7 +28,7 @@
         <mat-button-toggle value="25" (change)="changeHeight($event.value)">25</mat-button-toggle>
         <mat-button-toggle value="50" (change)="changeHeight($event.value)">50</mat-button-toggle>
         <mat-button-toggle value="100" (change)="changeHeight($event.value)">100</mat-button-toggle>
-        <!-- <mat-button-toggle value="max" (change)="changeHeight($event.value)">{{'ALL' | translate}}</mat-button-toggle> -->
+        <mat-button-toggle value="max" (change)="changeHeight($event.value)">{{'ALL' | translate}}</mat-button-toggle>
     </mat-button-toggle-group>
     <button type="button"  *ngIf="loadButton"  [disabled]="loadButtonDisabled"  mat-flat-button class="loadButton" (click)="loadDataButton()">
         <mat-icon fontSet="material-icons-round"> file_download </mat-icon>

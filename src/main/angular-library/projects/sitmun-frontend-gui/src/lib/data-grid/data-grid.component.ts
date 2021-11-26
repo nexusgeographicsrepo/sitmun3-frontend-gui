@@ -522,22 +522,24 @@ export class DataGridComponent implements OnInit {
       // else{
         // this.gridApi.setDomLayout(""); // Needed if we have set dom to autoHeight
 
-        if(value != 'default' ){
+        if(value != undefined && value != 'default' ){
           let pixels = "";
           if (value === '10') {
-            pixels = "350px"
+            pixels = ((10*28)+100)+"px"
           } else if (value === '25') {
-            pixels = "800px"
+            pixels =  ((25*28)+100)+"px"
           } else if (value === '50') {
-            pixels = "1450px"
+            pixels =  ((50*28)+100)+"px"
           } else if (value === '100') {
-            pixels = "2880px"
+            pixels = ((100*28)+100)+"px"
           }
           else{
-            pixels = "350px"
+            pixels = ((this.gridApi.getDisplayedRowCount()*28)+100)+"px"
           }
           
           this.elRef.nativeElement.parentElement.style.height = pixels;
+        }else{
+          this.elRef.nativeElement.parentElement.style.height = ((10*28)+100)+"px";
         }
 
 

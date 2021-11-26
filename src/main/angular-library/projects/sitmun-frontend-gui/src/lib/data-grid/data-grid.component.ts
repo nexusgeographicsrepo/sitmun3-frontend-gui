@@ -80,6 +80,7 @@ export class DataGridComponent implements OnInit {
   @Input() newStatusRegister: string;
   @Input() globalSearch: boolean;
   @Input() changeHeightButton: boolean;
+  @Input() heightButtonValueDefault: string;
   @Input() defaultHeight: any;
   @Input() themeGrid: any;
   @Input() singleSelection: boolean;
@@ -526,6 +527,9 @@ export class DataGridComponent implements OnInit {
           let pixels = "";
           if (value === '10') {
             pixels = ((10*28)+100)+"px"
+          } else if (value === '20') {
+            pixels =  ((20*28)+100)+"px"
+          } else if (value === '50') {
           } else if (value === '25') {
             pixels =  ((25*28)+100)+"px"
           } else if (value === '50') {

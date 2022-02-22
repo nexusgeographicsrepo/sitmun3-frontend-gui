@@ -1,57 +1,19 @@
 
 
-<form [formGroup]='translationForm' #f="ngForm">
+<ng-container *ngIf="!loading">
+    <form [formGroup]='translationForm' #f="ngForm">
 
-
-        <div class="displayInline" *ngIf="catalanAvailable">
-            <label class="formLabelDialog">
-                {{'Valor'}}
-            </label>
-            <mat-form-field appearance="outline">
-            <input matInput type="text" formControlName="catalanValue" required>
-            </mat-form-field>
-            <mat-icon class="icon" svgIcon="icon_lang_ca"></mat-icon>
-        </div>
-
-        <div class="displayInline"  *ngIf="spanishAvailable">
-            <label class="formLabelDialog">
-                {{'Valor'}}
-            </label>
-
-            <mat-form-field appearance="outline">
-            <input matInput type="text" formControlName="spanishValue">
-            </mat-form-field>
-            <mat-icon class="icon" svgIcon="icon_lang_es"></mat-icon>
-        </div>
-
-        <div class="displayInline" *ngIf="englishAvailable" >
-            <label class="formLabelDialog">
-                {{'Value'}}
-            </label>
-            <mat-form-field appearance="outline">
-            <input matInput type="text" formControlName="englishValue">
-            </mat-form-field>
-            <mat-icon class="icon" svgIcon="icon_lang_en"></mat-icon>
-        </div>
-
-        <div class="displayInline" *ngIf="araneseAvailable" >
-            <label class="formLabelDialog">
-                {{'Valor'}}
-            </label>
-            <mat-form-field appearance="outline">
-            <input matInput type="text" formControlName="araneseValue">
-            </mat-form-field>
-            <mat-icon class="icon" svgIcon="icon_lang_oc"></mat-icon>
-        </div>
-        <div class="displayInline">
-            <label class="formLabelDialog" *ngIf="frenchAvailable">
-                {{'Valeur'}}
-            </label>
-            <mat-form-field appearance="outline">
-            <input matInput type="text" formControlName="frenchValue">
-            </mat-form-field>
-            <mat-icon class="icon" svgIcon="icon_lang_fr"></mat-icon>
-        </div>
+        <ng-container *ngFor="let language of languagesAvailables">
+            <div class="displayInline" *ngIf="language.shortname != languageByDefault">
+                <label class="formLabelDialog">
+                    {{"valor" | translate}}
+                </label>
+                <mat-form-field appearance="outline">
+                <input matInput type="text" [formControlName]='language.shortname' required>
+                </mat-form-field>
+                <mat-icon class="icon" [svgIcon]=getIconName(language.shortname)></mat-icon>
+            </div>
+        </ng-container>
 
   </form>
 
@@ -61,3 +23,5 @@
         <button  mat-flat-button class="saveButton"  (click)="doAccept()" cdkFocusInitial>{{"accept" | translate}}</button>
     </div>
 </div>
+</ng-container>
+

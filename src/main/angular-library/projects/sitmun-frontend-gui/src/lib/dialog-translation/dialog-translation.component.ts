@@ -12,90 +12,53 @@ import { DomSanitizer } from "@angular/platform-browser";
 })
 export class DialogTranslationComponent implements OnInit {
 
-  translationForm: FormGroup;
+  translationForm: FormGroup = new FormGroup({})
   translationsMap:  Map<string, any>;
   languageByDefault:  string;
   languagesAvailables: Array<any>;
-  catalanAvailable = false;
-  catalanValue: string;
-  spanishAvailable = false;
-  spanishValue: string;
-  englishAvailable = false;
-  englishValue: string;
-  araneseAvailable = false;
-  araneseValue: string;
-  frenchAvailable = false;
-  frenchValue: string;
+  loading = true;
 
   constructor(private dialogRef: MatDialogRef<DialogTranslationComponent>,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer) { 
-    this.initializeTranslationForm();
-    this.matIconRegistry.addSvgIcon(
-      `icon_lang_ca`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/img/flag_ca.svg')
-    );
-    this.matIconRegistry.addSvgIcon(
-      `icon_lang_es`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/img/flag_es.svg')
-    );
-    this.matIconRegistry.addSvgIcon(
-      `icon_lang_en`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/img/flag_en.svg')
-    );
-    this.matIconRegistry.addSvgIcon(
-      `icon_lang_oc`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/img/flag_oc.svg')
-    );
-    this.matIconRegistry.addSvgIcon(
-      `icon_lang_fr`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/img/flag_fr.svg')
-    );
   }
 
   ngOnInit(): void {
-
-    this.checkLanguagesAvailables();
-    this.checkTranslationsAlreadyDone();
+    this.initializeDialog();
+    this.loading=false;
   }
 
-  checkLanguagesAvailables(): void {
+  initializeDialog(): void{
     this.languagesAvailables.forEach(element => {
-      if(element.shortname == 'ca' && this.languageByDefault!= 'ca') {  this.catalanAvailable = true }
-      if(element.shortname == 'es' && this.languageByDefault!= 'es') {  this.spanishAvailable = true }
-      if(element.shortname == 'en' && this.languageByDefault!= 'en') {  this.englishAvailable = true }
-      if(element.shortname == 'oc-aranes' && this.languageByDefault!= 'oc-aranes') {  this.araneseAvailable = true }
-      if(element.shortname == 'fr' && this.languageByDefault!= 'fr') {  this.frenchAvailable = true }
+      this.registerIcon(element.shortname)
+      this.initializeForm(element.shortname);
     });
   }
 
-  checkTranslationsAlreadyDone(): void {
-    this.translationsMap.forEach((value: any, key: string) => {
-      if(key == 'ca' && value && value.translation) { this.translationForm.patchValue({ catalanValue: value.translation }) }
-      if(key == 'es' && value && value.translation) { this.translationForm.patchValue({ spanishValue: value.translation }) }
-      if(key == 'en' && value && value.translation) { this.translationForm.patchValue({ englishValue: value.translation }) }
-      if(key == 'oc-aranes' && value && value.translation) { this.translationForm.patchValue({ araneseValue: value.translation }) }
-      if(key == 'fr' && value && value.translation) { this.translationForm.patchValue({ frenchValue: value.translation }) }
-  });
+  registerIcon(elementShortname){
+    this.matIconRegistry.addSvgIcon(
+      this.getIconName(elementShortname),
+      this.domSanitizer.bypassSecurityTrustResourceUrl(`assets/img/flag_${elementShortname}.svg`)
+    );
   }
 
-  initializeTranslationForm(): void {
+  initializeForm(elementShortname):void{
+    let currentValueOnMap = this.translationsMap.get(elementShortname);
+    let valueToPutOnForm = (currentValueOnMap && currentValueOnMap.translation)?currentValueOnMap.translation:null;
+    this.translationForm.addControl(elementShortname, new FormControl(valueToPutOnForm, []))
+  }
 
-    this.translationForm = new FormGroup({
-      catalanValue: new FormControl(null, []),
-      spanishValue: new FormControl(null, []),
-      englishValue: new FormControl(null, []),
-      araneseValue: new FormControl(null, []),
-      frenchValue: new FormControl(null, []),
-    })
+  getIconName(elementShortname):string{
+    return `icon_lang_${elementShortname}` 
   }
 
   doAccept(){
-    if (this.translationsMap.has("ca") && this.translationForm.value.catalanValue) { this.translationsMap.get('ca').translation = this.translationForm.value.catalanValue }
-    if (this.translationsMap.has("es") && this.translationForm.value.spanishValue) { this.translationsMap.get('es').translation = this.translationForm.value.spanishValue }
-    if (this.translationsMap.has("en") && this.translationForm.value.englishValue) { this.translationsMap.get('en').translation = this.translationForm.value.englishValue }
-    if (this.translationsMap.has("oc-aranes") && this.translationForm.value.araneseValue) { this.translationsMap.get('oc-aranes').translation = this.translationForm.value.araneseValue }
-    if (this.translationsMap.has("fr") && this.translationForm.value.frenchValue) { this.translationsMap.get('fr').translation = this.translationForm.value.frenchValue }
+    this.languagesAvailables.forEach(language => {
+      if(this.translationsMap.has(language.shortname) && this.translationForm.get(language.shortname)?.value){
+        this.translationsMap.get(language.shortname).translation = this.translationForm.get(language.shortname).value
+      }
+    });
+
     this.dialogRef.close({event:'Accept', data: this.translationsMap});
   }
 
